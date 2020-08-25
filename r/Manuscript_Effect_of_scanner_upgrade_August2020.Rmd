@@ -1,0 +1,609 @@
+---
+title: "Estimating the effect of a scanner upgrade on measures of gray matter structure for longitudinal designs"
+author:
+  - Evelyn Medawar, MSc, [1]
+  - Ronja Thieleking, MSc, [1]
+  - Iryna Manuilova, BSc, [1]
+  - Maria Paerisch, MSc, [1]
+  - Arno Villringer, Prof., [1][2][3]
+  - A. Veronica Witte, PhD, [1][2]
+  - Frauke Beyer, PhD, [1][2]
+date: 1 Max-Planck-Institute for Human Cognitive and Brain Sciences, Leipzig \newline 2 CRC 1052 "Obesity Mechanisms", Subproject A1, University of Leipzig \newline 3 Day Clinic for Cognitive Neurology, University Clinic Leipzig
+
+output:
+  bookdown::pdf_book: 
+    fig_caption: yes
+    always_allow_html: true
+    number_sections: yes
+    toc: yes
+bibliography: "bibliography.bib" 
+
+---
+
+```{r "Package loading", include=FALSE}
+library(lme4)
+library(ggplot2)
+library(haven)
+library(plyr)
+library(dplyr)
+library(tidyr)
+library(knitr)
+library(psych)
+library(psy)
+library(boot)
+library(MuMIn)
+library(kableExtra)
+library(patchwork)
+library(lsr)
+options(knitr.table.format = "latex") 
+library(wesanderson)
+library(cowplot)
+source("icc_table.R")
+source("create_long_table.R")
+source("cnr_rh_table.R")
+knitr::opts_chunk$set(echo = FALSE, message=FALSE, warning=FALSE, fig.height=2, fig.width=4)
+
+#put the path to this file here (working directory for Rmarkdown):
+opts_knit$set(root.dir = "/data/pt_nro186_lifeupdate/Results/GMV_project_evelyn_frauke/life_upgrade/r/")
+```
+
+```{r load fsbrain, echo=FALSE}
+library(fsbrain)
+atlas = 'aparc';
+template_subject = 'fsaverage';
+#put path to a FreeSurfer directory (or location of fsaverage template here)
+template_subjects_dir = "/data/pt_nro186_lifeupdate/Data/FREESURFER/FREESURFER_long/"; 
+library('rgl');
+r3dDefaults$windowRect=c(50, 50, 500, 500);
+
+#makecmap_th = colorRampPalette(RColorBrewer::brewer.pal(9, name="YlOrRd"));
+makecmap_pd = colorRampPalette(RColorBrewer::brewer.pal(9, name="RdBu"));
+```
+\newpage
+# Abstract
+Neuroimaging studies investigating brain structural change benefit from longitudinal designs with long follow-up intervals. Yet, changes to magnetic resonance imaging (MRI) scanners may become inevitable  and potentially decrease reliability and introduce biases in these studies.   
+Here, we therefore investigated the difference between MRI scanners with subsequent versions (3 Tesla Siemens Verio vs. Skyra fit) on the cortical and subcortical measures of grey matter in a large sample of healthy, young adults using the validated longitudinal FreeSurfer stream on T1-weighted brain images.
+We found between-scanner reliability to be excellent. Yet, paired t-tests revealed statistically significant differences, i.e. biases, in grey matter volume, area and thickness for different cortical and subcortical regions. Offline correction for gradient distortions only slightly reduced these differences. T1-imaging based quality measures differed systematically between scanners.    
+We conclude that scanner upgrades during a longitudinal study introduce bias in measures of cortical and subcortical gray matter structure. Therefore, before upgrading a MRI scanner during an ongoing study, researchers should prepare to implement an appropriate correction method for these effects.
+
+\newpage
+# Introduction
+Many longitudinal neuroimaging studies of aging and development investigate changes in local gray matter volume (GMV) over time to identify biomarkers and trajectories relevant to health and disease. Notably, in the past decade many large-scale studies have implemented longitudinal designs in the general population (with at least two timepoints: @bycroft2018uk; @ikram2015rotterdam, second timepoint currently being acquired: @RN35; @bamberg2015).   
+Such longitudinal imaging studies assess within-subject differences and thereby benefit from reduction of error variance and confounding. Yet, scanner changes often become inevitable with long follow-up intervals (4-6 years) in these studies, entailing issues of reliability because of changes in signal-to-noise ratio or image intensity [@PREBOSKE20061196; @takao2010; @RN1331; @RN1334]. This is especially problematic in the case of two-visit longitudinal imaging studies where measurement occasion may be collinear with scanner upgrade, making it difficult to draw unbiased conclusions on within-subject change.   
+In contrast, scanner upgrades will affect cross-sectional designs less as scanner version can be modelled like a site effect [@RN1323].
+Before the follow-up of the LIFE-Adult Study, a two-visit longitudinal imaging study with a long inter-visit interval (5-7 years), we had to decide on the upgrade of the study scanner from SIEMENS Verio to Skyra fit [@RN35]. At the time (end of 2017), most studies on the effects of scanner upgrades had investigated small samples (n<15) or voxel-based morphometry estimates of gray matter (GM) structure [@RN1328; @SHUTER2008371; @takao2013], with varying estimates of reliability and bias. Thus, the impact of a scanner upgrade on region-and vertex-wise measures of cortical GM (thickness, area and volume) as well as subcortical GM volume still lacked quantification. Also, these studies did not take into account gradient distortion correction which has been shown to partly account for variation between scanners [@RN1326; @RN1321].  
+Here, we therefore investigated the difference between scanners with subsequent versions (3 Tesla Siemens Verio vs. Skyra fit) on the cortical and subcortical measures of GM in a large sample of healthy, young adults. Differences between the systems included the changes introduced by software and hardware upgrades (update to syngo MR E11 software, Tim 4G body coil, installation of DirectRF) and systematic differences due to B0 and B1 fields. Because we were about to decide on the upgrade (which we eventually declined), we could not perform a comparison of the same scanner pre/post upgrade.    
+Using the validated longitudinal FreeSurfer stream, we expected the reliability of whole-brain and regional GM measures to be similar to previous studies investigating between-site reliability [@RN1343; @RN1318; @RN1322]. Based on previous upgrade studies, we hypothesized a systematic bias with varying effect sizes and direction in cortical and subcortical regions [@RN1328; @RN1327]. Finally, we expected gradient distortion correction to improve reliability and reduce bias.
+
+
+
+\newpage
+
+# Methods
+
+```{r Load data, include=FALSE}
+#Because we are not allowed to share study IDs, we removed all IDs and replaced them with numbers. We share only already merged tables.
+
+#for information on age, sex, duration between scans
+qa_info=read.csv("qa_info.csv")
+qdec_long=read.table(file = "qdec_long")
+years=qdec_long$years[seq(2,length(qdec_long$years),2)]
+mean_months=round(12*mean(years),2)
+sd_months=round(12*sd(years),2)
+
+#Main analysis
+#for cortical measures from longitudinal FreeSurfer (CT/CA/CV)
+aparc_ct=read.csv("aparc_ct.csv")
+aparc_area=read.csv("aparc_area.csv")
+aparc_volume=read.csv("aparc_volume.csv")
+
+#for volumes from longitudinal FreeSurfer subcortical regions
+vol=read.csv("aseg_volume.csv")
+
+#for QA measures from mriqc
+qa=read.csv("mriqc_measures.csv")
+
+#for distortion corrected data
+#CT
+aparc_unw=read.csv("aparc_ct_unw.csv")
+#subcortical volumes
+vol_unw=read.csv("vol_unw.csv")
+```
+
+## Sample  
+`r nrow(qa_info)` healthy participants (age in years: mean = `r round(mean(qa_info$Alter_aktuell),2)`, sd = `r round(sd(qa_info$Alter_aktuell),2)`; `r table(qa_info$Geschlecht)[2]` females) were scanned on two different 3 Tesla MRI scanners with subsequent versions (MAGNETOM Verio syngo MR B17, MAGNETOM Skyra fit syngo MR E11 (Siemens, Erlangen)). Due to a pending version update of the Verio scanner, all participants were first scanned at the Verio and then at the Skyra . On average, `r mean_months` months (sd = `r sd_months` months) passed in-between sessions.   
+`r nrow(qa_info[qa_info$SKYRA..0.unscanned.1.scanned.==0,])` participants did only participate in the first scanning session at the Verio  and were therefore excluded in the following analysis. The study was approved by the local ethics committees and all participants gave written informed consent according to the Declaration of Helsinki.  
+
+  ```{r Reminder of sample size, eval=FALSE}
+there are 121 subjects, 5 do not have Skyra assessment -> 116.This means 232 scans in both qdec_long_table & in the fs_id for extraction of ROI values. 
+```
+
+## Imaging sequence  
+On both scanners, anatomical T1-weighted imaging was performed with a magnetization-prepared rapid gradient-echo (MPRAGE) sequence (TR=2300 ms,TE=2.98 ms, TI=900 ms, acceleration: GRAPPA factor 2, flip angle: 9°, imaging matrix 256 x 240 x 176 and voxel size= 1 $mm³$, with prescan normalize option) according to the ADNI protocol [@RN500]. Additional sequences, i.e. diffusion-weighted imaging (DWI) were also acquired and are discussed elsewhere (Thieleking et al., in prep). On the Skyra, both online 3D gradient distortion-corrected images ("D") and images not corrected for distortions ("ND") were available. The Verio scanner delivered the images without gradient-distortion correction ("ND").   
+In the main analysis, we compared the Verio "ND" and the distortion-corrected "D" Skyra data, in the gradient distortion correction analysis we compared the offline `gradunwarp` distortion corrected Skyra ND and Verio ND (see the diagram of the study flow in Figure \@ref(fig:overview)).
+```{r overview, eval=FALSE, fig.cap="Overview of the scanner outcome images and the performed analyses. Orange: input images for main analysis based on standard output provided by scanner (Verio without correction, Skyra with distortion correction). Blue: input images for secondary analysis based on original images from scanner and subsequent offline distortion correction with gradunwarp",out.width="75%", fig.show='hold',fig.align='center'}
+overview_figure=c("FIGURE1.png")
+knitr::include_graphics(overview_figure)
+#out.width="49%", out.height="30%",
+```
+
+## Preprocessing  
+### Gradient distortion correction
+Gradient distortion correction has been shown to contribute to measurement error in repeated sessions of anatomical brain imaging [@takao2010]. Accordingly, correcting for distortion correction can improve the reproducibility of  intensity data significantly [@RN1326]. For the Verio  scanner, the vendor provided no online distortion correction while the Skyra system offered online 3D-distortion correction. To assess the effect of this processing step on reliability and bias, we applied an identical tool for offline gradient distortion correction on the ND sequences from both scanners. Gradient unwarping calculates the geometric displacement based on the spherical expansion of the magnetic gradient fields and applies it to the image. We used the gradunwarp implementation [(https://github.com/Washington-University/gradunwarp)] in Python 2.7. We visually compared the original and the outcome unwarped files to determine the appropriate number of sampling points and interpolation order. Based on this, we chose 200 sampling points and 4th order interpolation (`--fovmin -0.2 --fovmax 0.2 --numpoints 200 --interp_order 4`) because this yielded most similar intensity distributions. After unwarping, we repeated FreeSurfer's cross-sectional and longitudinal stream for these images. Then, we assessed the reliability and bias in cortical and subcortical ROI measures between the `gradunwarp` distortion corrected Skyra ND and Verio ND images.
+
+### FreeSurfer analysis
+To extract reliable volume and thickness estimates, we processed the T1-weighted images with the longitudinal stream in FreeSurfer [@RN1343]. Within this pipeline, an unbiased within-subject template space and image [@REUTER201119] is created using robust, inverse consistent registration [@REUTER20101181]. Longitudinal stream increases the reliability of cortical and subcortical GM estimates compared to the cross-sectional stream and is thus appropriate for longitudinal studies [@RN1322]. We used FreeSurfer version 6.0.0p1 with the default parameters `recon-all -all -parallel -no-isrunning -openmp 8`, which include non-parametric non-uniform intensity normalization with the MINC tool `nu_correct`. 
+First, we ran the `recon-all` longitudinal stream for Verio ND and Skyra D. Then, we repeated this analysis for the gradient-unwarped Verio and Skyra ND T1-weighted images.
+
+<!-- ``` -->
+<!--     + CAT 12   -->
+<!-- We used CAT12 to compare our FreeSurfer results to another established anatomical imaging pipeline. Here, we processed the Verio and Skyra distortion-corrected data with the CAT12 longitudinal stream and default parameters. MRI data preprocessing for voxel-based morphometry (VBM) was done using CAT12.1 v1278 [@Gaser2016] and SPM12 v7219 (http://www.fil.ion.ucl.ac.uk/spm), running on MATLAB 9.3 (Mathworks, Natick, MA, USA). The longitudinal preprocessing pipeline included intra-subject realignment, bias correction, segmentation, normalization, a quality check and smoothing with a 8x8x8mm Gaussian filter. Segmentation in CAT12.1 failed in 5 out of 117 subjects. -->
+<!-- ``` -->
+
+
+### Quality Assessment  
+We visually checked the cross-sectional as well as the longitudinal runs for errors in white matter segmentation and misplaced pials [@RN1262].
+There were `r nrow(qa_info[!is.na(qa_info$correction.necessary)&qa_info$correction.necessary==1,])` cases where the pial surface expanded into non-brain tissue. These were corrected by either editing the brainmask in the longitudinal template or by correcting the cross-sectional runs. After correction, we re-ran the longitudinal template creation step and the longitudinal timepoints. No issues regarding white matter segmentation were noticed.   
+To quantify potential differences in image quality between scanners, we compared different quality control measures provided by `mriqc` version 0.15.0 [@esteban2017mriqc]. We used coefficient of joint variation (CJV) as it is an important predictor of image quality [@esteban2017mriqc]. Furthermore, we compared contrast to noise ratio (CNR) to quantify the difference between gray and white matter intensity distributions and the entropy focus criterion (EFC) to describe the amount of ghosting and blurring induced by head motion. We performed `mriqc` on the Verio ND, Skyra ND and vendor-provided D images.
+
+### Outcomes  
+As outcomes we defined cortical thickness (CT), area (CA) and volume (CV) estimates from regions of interests defined by the Desikan-Killiany (DK) cortical parcellation (64 ROIs for both hemispheres). Subcortical volumes were extracted from FreeSurfer's subcortical segmentation ("aseg.mgz", 18 bilateral ROIs). We analyzed all ROIs per hemisphere. Subcortical volumes were not adjusted for head size because during the longitudinal stream, both images are normalized to the same head size already.
+
+## Analysis  
+All statistical analysis were performed in R version 3.6.1 [@Rcore].
+
+### Reliability and percent difference of cortical and subcortical GM measures
+To assess the reliability of the GM estimates, we calculated the intra-class correlation coefficient (ICC) using the two-way mixed effect ICC model for single measures with absolute agreement [@shrout1979intraclass], implemented in the package `psy`. The ICC yields a value between 0 and 1, with a similar interpretation as the Pearson's correlation coefficient, but takes into account a possible bias between rater (i.e. scanners).  
+We calculated ICC for each cortical DK and subcortical ROI and reported the estimate and 95% confidence interval, derived by bootstrapping. According to [@cicchetti1994guidelines], we considered an ICC below .4 to be poor, between .40 and .59 to be fair; .60 and .74 to be good and between .75 and 1.00 to be excellent. 
+In order to assess the relative difference of GM measures between scanners, we calculated percent difference (PD) (also termed variability error [@RN1322; @RN1330]). We calculated the mean of the PD for each ROI  $j$ across $n$ participants according to
+$$PD_{j} = \frac{2}{n}\sum\limits_{i=1}^{n}{\frac{V_{ij}-S_{ij}} {V_{ij}+S_{ij}}}$$
+where $V_{ij}$ is the GM measure of a ROI measured on the Verio , $S_{ij}$ is the GM measure of a ROI measured on the Skyra .  
+Finally, we performed paired t-tests to inform about the direction and statistical significance of potential systematic differences between scanners. Here, we used Benjamini-Hochberg correction to adjust p-values per cortical GM measure and deemed differences to be significant at $p_{adj}$ <0.05 [@RN200]. We reported T-value, uncorrected and corrected p-values.   
+We compared the improvement induced by using the same unwarping procedure for both Skyra ND and Verio ND images by applying paired t-tests to the ICC and PD measures of CT and subcortical volume from the secondary analysis (`gradunwarped` SKYRA D, Verio D) and the original analysis (vendor-provided Skyra D, Verio ND).
+
+### Vertex-wise estimation of reliability and percent difference
+For whole-brain visualization, we performed vertex-wise calculations on the fsaverage template following [@liem2015] in Matlab version 9.7 (2019b). We calculated ICC and PD for cortical thickness, area and volume to visualize reliability and difference between scanners on a vertex-wise level. 
+<!-- To assess potential systematic over-or underestimation of cortical measures on the whole-brain level, we also performed paired-sample t-tests. -->
+
+### Quality metrics
+For the quality metrics from `mriqc`, we used linear mixed models (LMM) implemented  to assess differences between scanners (Verio, Skyra) and acquisitions (D, ND) using `lmerTest`. Significance was defined based on model comparisons (using Chi-square test with R's `anova`) between LMM including either scanner or acquisition as a fixed effect and null models only including the random effects of subject. Significance of the effect was defined as p < 0.05.  
+We also tested whether CNR was associated with regional CT, independent of scanner, using a LMM with both factors. We report $\beta$ estimates, raw and Benjamini-Hochberg adjusted p-values.
+
+### Data and Code availability
+Region-of-interest data and code used for this publication are available on github (https://github.com/fBeyer89/life_upgrade). Under certain conditions, the authors may also provide access to the MRI data.
+\newpage
+
+# Results 
+
+## Differences in cortical GM measures between scanners
+
+```{r create thickness table, echo=FALSE}
+aparc_ct_l=create_long_table_aparc(aparc_ct,"thickness")
+#---- calculate ICC and PD for FreeSurfer cortical thickness----
+icc_res_th<-create_icc_table_aparc(aparc_ct_l)
+colnames(icc_res_th)=c("ROI","hemi","ICC", "lower ICC", "upper ICC", "PD", "T", "p", "adj.p")
+```
+
+```{r create area table, echo=FALSE}
+aparc_area_l=create_long_table_aparc(aparc_area, "area")
+#---- calculate ICC and PD for FreeSurfer cortical area----
+icc_res_area<-create_icc_table_aparc(aparc_area_l)
+colnames(icc_res_area)=c("ROI","hemi","ICC", "lower ICC", "upper ICC", "PD", "T", "p", "adj.p")
+```
+
+```{r create volume table, echo=FALSE}
+aparc_volume_l=create_long_table_aparc(aparc_volume,"volume")
+#---- calculate ICC and PD for FreeSurfer cortical volume----
+icc_res_vol<-create_icc_table_aparc(aparc_volume_l)
+colnames(icc_res_vol)=c("ROI","hemi","ICC", "lower ICC", "upper ICC", "PD", "T", "p", "adj.p")
+```
+
+Figures \@ref(fig:plotthICCPD), \@ref(fig:plotareaICCPD) and \@ref(fig:plotvolICCPD) summarize the results for CT, CA and CV, respectively.
+
+```{r prepare thickness ICC + PD plots, cache=TRUE, eval=FALSE}
+lh_region_value_list=icc_res_th[icc_res_th$hemi=="lh","ICC"]
+names(lh_region_value_list) = icc_res_th[icc_res_th$hemi=="lh","ROI"] 
+rh_region_value_list=icc_res_th[icc_res_th$hemi=="rh","ICC"]
+names(rh_region_value_list) = icc_res_th[icc_res_th$hemi=="rh","ROI"] 
+
+vis.region.values.on.subject(template_subjects_dir, template_subject, atlas, lh_region_value_list, rh_region_value_list, views=c('t4'), draw_colorbar="horizontal",rglactions = list("snapshot_png"="icc_th.png"))
+
+lh_region_value_list=icc_res_th[icc_res_th$hemi=="lh","PD"]
+names(lh_region_value_list) = icc_res_th[icc_res_th$hemi=="lh","ROI"] 
+rh_region_value_list=icc_res_th[icc_res_th$hemi=="rh","PD"]
+names(rh_region_value_list) = icc_res_th[icc_res_th$hemi=="rh","ROI"] 
+vis.region.values.on.subject(template_subjects_dir, template_subject, atlas,  rh_region_value_list,lh_region_value_list, views=c('t4'), draw_colorbar="horizontal",makecmap_options=list('colFn'=makecmap_pd,'symm'=TRUE), rglactions = list("snapshot_png"="pd_th.png"));
+```
+
+```{r plotthICCPD, echo=FALSE, out.width="49%", out.height="30%", fig.cap="left panel: CT ICC, right panel: CT PD (for each panel, left column shows lateral and medial view of right hemisphere, right column shows lateral and medial view of left hemisphere), negative values:Skyra>Verio, positive values: Verio>Skyra",fig.show='hold',fig.align='center'}
+thickness_icc_pd=c("icc_th.png","pd_th.png")
+knitr::include_graphics(thickness_icc_pd)
+```
+
+```{r prepare area ICC + PD plots, cache=TRUE, echo=FALSE}
+#do not include this chunk now (because figures are done, as it opens RGL windows)
+lh_region_value_list=icc_res_area[icc_res_area$hemi=="lh","ICC"]
+names(lh_region_value_list) = icc_res_area[icc_res_area$hemi=="lh","ROI"] 
+rh_region_value_list=icc_res_area[icc_res_area$hemi=="rh","ICC"]
+names(rh_region_value_list) = icc_res_area[icc_res_area$hemi=="rh","ROI"] 
+
+vis.region.values.on.subject(template_subjects_dir, template_subject, atlas, lh_region_value_list, rh_region_value_list, views=c('t4'), draw_colorbar="horizontal",
+rglactions = list("snapshot_png"="icc_area.png"))#,makecmap_options=makecmap_pd
+
+lh_region_value_list=icc_res_area[icc_res_area$hemi=="lh","PD"]
+names(lh_region_value_list) = icc_res_area[icc_res_area$hemi=="lh","ROI"] 
+rh_region_value_list=icc_res_area[icc_res_area$hemi=="rh","PD"]
+names(rh_region_value_list) = icc_res_area[icc_res_area$hemi=="rh","ROI"] 
+vis.region.values.on.subject(template_subjects_dir, template_subject, atlas, lh_region_value_list, rh_region_value_list, views=c('t4'), draw_colorbar="horizontal", rglactions = list("snapshot_png"="pd_area.png"),makecmap_options=list('colFn'=makecmap_pd,'symm'=TRUE));
+```
+
+```{r plotareaICCPD, echo=FALSE, out.width="49%", out.height="30%", fig.cap="left panel: CA ICC, right panel: CA PD (for each panel, left column shows lateral and medial view of right hemisphere, right column shows lateral and medial view of left hemisphere), negative values:Skyra>Verio, positive values: Verio>Skyra",fig.show='hold',fig.align='center'}
+area_icc_pd=c("icc_area.png","pd_area.png")
+knitr::include_graphics(area_icc_pd)
+```
+
+```{r prepare volume ICC + PD plots, cache=TRUE,echo=FALSE}
+lh_region_value_list=icc_res_vol[icc_res_vol$hemi=="lh","ICC"]
+names(lh_region_value_list) = icc_res_vol[icc_res_vol$hemi=="lh","ROI"] 
+rh_region_value_list=icc_res_vol[icc_res_vol$hemi=="rh","ICC"]
+names(rh_region_value_list) = icc_res_vol[icc_res_vol$hemi=="rh","ROI"] 
+
+vis.region.values.on.subject(template_subjects_dir, template_subject, atlas, lh_region_value_list, rh_region_value_list, views=c('t4'), draw_colorbar="horizontal", rglactions = list("snapshot_png"="icc_vol.png"))
+
+lh_region_value_list=icc_res_vol[icc_res_vol$hemi=="lh","PD"]
+names(lh_region_value_list) = icc_res_vol[icc_res_vol$hemi=="lh","ROI"] 
+rh_region_value_list=icc_res_vol[icc_res_vol$hemi=="rh","PD"]
+names(rh_region_value_list) = icc_res_vol[icc_res_vol$hemi=="rh","ROI"] 
+vis.region.values.on.subject(template_subjects_dir, template_subject, atlas, lh_region_value_list, rh_region_value_list, views=c('t4'), draw_colorbar="horizontal", rglactions = list("snapshot_png"="pd_vol.png"),makecmap_options=list('colFn'=makecmap_pd,'symm'=TRUE));
+```
+
+```{r plotvolICCPD, echo=FALSE, out.width="49%", out.height="30%", fig.cap="left panel: CV ICC, right panel: CV PD (for each panel, left column shows lateral and medial view of right hemisphere, right column shows lateral and medial view of left hemisphere), negative values:Skyra>Verio, positive values: Verio>Skyra",fig.show='hold',fig.align='center'}
+vol_icc_pd=c("icc_vol.png","pd_vol.png")
+knitr::include_graphics(vol_icc_pd)
+```
+
+ Overall, the ICC or scan-rescan reliability was good, many regions also showed excellent reliability (CT: mean= `r round(mean(icc_res_th$ICC),2)`, min=`r round(min(icc_res_th$ICC),2)`, max=`r round(max(icc_res_th$ICC),2)`; CA: mean=`r round(mean(icc_res_area$ICC),2)`, min=`r round(min(icc_res_area$ICC),2)`, max=`r round(max(icc_res_area$ICC),2)`; CV: mean=`r round(mean(icc_res_vol$ICC),2)`, min=`r round(min(icc_res_vol$ICC),2)`, max=`r round(max(icc_res_vol$ICC),2)`).   
+The PD was around 2-4% for CT and CA (CT: mean=`r round(mean(icc_res_th$PD),2)`, min=`r round(min(icc_res_th$PD),2)`, max=`r round(max(icc_res_th$PD),2)`; CA: mean=`r round(mean(icc_res_area$PD),2)`, min=`r round(min(icc_res_area$PD),2)`, max=`r round(max(icc_res_area$PD),2)`), and slightly higher for CV (CV: mean=`r round(mean(icc_res_vol$PD),2)`, min=`r round(min(icc_res_vol$PD),2)`, max=`r round(max(icc_res_vol$PD),2)`). 
+Most pronounced differences were located in medial and lateral frontal and central regions, where CT, CA and CV were lower in Verio compared to Skyra. Higher values for CT, CA and CV for Verio compared to Skyra were found in lateral occipital, inferior and middle temporal regions. 
+Accordingly, paired t-tests indicated systematic differences between scanners for most regions of interest (FDR-corrected, CT: `r round((nrow(icc_res_th[icc_res_th$p<0.05,])*100/64),1)`% of all 64 bilateral ROIs, CA: `r round((nrow(icc_res_area[icc_res_area$p<0.05,])*100/64),1)`%, CV: `r round((nrow(icc_res_vol[icc_res_vol$p<0.05,])*100/64),1)`%. 
+For detailed results per cortical region see Tables 1.1, 2.1 and 3.1 in the Supplementary Material.  
+The vertex-wise analysis showed similar effects, highlighting that CT, CA and CV were higher in the central gyrus, and in the gyri of the temporal lobe (regions: postcentral, superiortemporal, inferiortemporal) for Verio compared to Skyra (See Supplementary Material, Figures 1.2 - 3.3).
+
+## Differences in subcortical measures between scanners
+```{r create subcort table, echo=FALSE}
+vol_l=create_long_table_subcort(vol)
+icc_res_vol<-create_icc_table_vol(vol_l)
+colnames(icc_res_vol)=c("ROI","hemi","ICC", "lower ICC", "upper ICC", "PD", "T", "p", "adj.p")
+```
+
+```{r tab4subcort, echo=FALSE}
+vol_table=
+icc_res_vol %>%
+   mutate(
+     adj.p = cell_spec(adj.p, "latex", bold = ifelse(adj.p < 0.05, T, F))
+   )  %>%
+  #select(p_adjust) %>%
+  kable("latex", escape = F, caption="Reliability and percent differences for subcortical volumes") %>%
+  kable_styling(bootstrap_options = c("striped", "hover"))
+vol_table
+```
+
+As shown in \@ref(tab:tab4subcort), subcortial regions, similar to cortical areas, showed excellent reliability for all ROI (mean=`r round(mean(icc_res_vol$ICC),2)`, min=`r round(min(icc_res_vol$ICC),2)`, max=`r round(max(icc_res_vol$ICC),2)`). The PD was around 2-4% (mean=`r round(mean(icc_res_vol$PD),2)`, min=`r round(min(icc_res_vol$PD),2)`, max=`r round(max(icc_res_vol$PD),2)`), with an exceptionally high value of 9.5% for left Accumbens. Significant differences between scanners were evident for most regions (FDR-corrected, `r round((nrow(icc_res_vol[icc_res_vol$p<0.05,])*100/14),1)`% of all 14 bilateral ROIs).
+
+## QA measures
+First, we compared CJV, CNR and EFC, three quality measures from [mriqc](https://mriqc.readthedocs.io) between Verio ND and Skyra D acquisitions. We aimed to determine whether differences in basic signal properties might underlie the observed differences in measures of GM structure.  
+```{r create QA measures table, echo=FALSE}
+for (i in 1:nrow(qa)){
+  #print(i)
+  #print(qa[i,1])
+  tmp=strsplit(toString(qa[i,1]),'_')[[1]]
+  #print(tmp)
+  qa[i,"subj"]=tmp[1]
+  qa[i,"scanner"]=tmp[2]
+  qa[i,"acq"]=tmp[3]
+}
+
+```
+
+```{r calculate differences between scanners, echo=FALSE}
+#only compare Verio -ND with Skyra -D
+res_cnr=lmer(cnr ~ scanner + (1|subj), data=qa[!(qa$scanner=="Skyra"&qa$acq=="D"),]) 
+null_cnr=lmer(cnr ~ (1|subj), data=qa[!(qa$scanner=="Skyra"&qa$acq=="D"),])
+anov_cnr=anova(res_cnr,null_cnr)
+p_cnr=anov_cnr$`Pr(>Chisq)`[2]
+
+res_efc=lmer(efc ~ scanner + (1|subj), data=qa[!(qa$scanner=="Skyra"&qa$acq=="D"),]) 
+null_efc=lmer(efc ~ (1|subj), data=qa[!(qa$scanner=="Skyra"&qa$acq=="D"),])
+anov_efc=anova(res_efc,null_efc)
+p_efc=anov_efc$`Pr(>Chisq)`[2]
+
+res_cjv=lmer(cjv ~ scanner + (1|subj), data=qa[!(qa$scanner=="Skyra"&qa$acq=="D"),]) 
+null_cjv=lmer(cjv ~ (1|subj), data=qa[!(qa$scanner=="Skyra"&qa$acq=="D"),])
+anov_cjv=anova(res_cjv,null_cjv)
+p_cjv=anov_cjv$`Pr(>Chisq)`[2]
+```
+
+```{r plotqadiff, fig.cap="Quality metrics (CNR (left panel), EFC (middle panel) and CJV (right panel)) compared between Skyra D (red) and Verio ND (blue) acquisitions, showing overall higher data quality on the Verio scanner", fig.show='hold',fig.align='center', fig.width=9, fig.height=4, echo=FALSE}
+qa$Scanner=as.factor(qa$scanner)
+levels(qa$Scanner)=c("Skyra","Verio")
+qa$Acquisition=as.factor(qa$acq)
+levels(qa$Acquisition)=c("D","ND")
+
+tspag_cnr = ggplot(qa[!(qa$Scanner=="Skyra"&qa$Acquisition=="D"),], aes(x=Scanner, y=cnr, fill =Scanner)) + 
+  geom_boxplot()+
+  xlab(bquote("Scanner")) + 
+  ylab(bquote('CNR')) + 
+  scale_fill_manual(values=wes_palette("FantasticFox1",2,type="discrete")) +
+  theme(axis.text=element_text(size=10),
+  axis.title=element_text(size=12),
+  strip.text = element_text(size=12),
+  legend.position="top")
+
+tspag_efc = ggplot(qa[!(qa$Scanner=="Skyra"&qa$Acquisition=="D"),], aes(x=Scanner, y=efc, fill=Scanner, group=Scanner)) +   geom_boxplot() + 
+  xlab(bquote("Scanner")) + 
+  ylab(bquote('EFC')) +
+  scale_fill_manual(values=wes_palette("FantasticFox1",2,type="discrete")) +
+  theme(axis.text=element_text(size=10),
+  axis.title=element_text(size=12),
+  strip.text = element_text(size=12),
+  legend.position="top")
+
+tspag_cjv = ggplot(qa[!(qa$Scanner=="Skyra"&qa$Acquisition=="D"),], aes(x=Scanner, y=cjv, fill=Scanner, group=Scanner)) +   geom_boxplot() + 
+  xlab(bquote("Scanner")) + 
+  ylab(bquote('CJV'))  + 
+  scale_fill_manual(values=wes_palette("FantasticFox1",2,type="discrete")) +
+  theme(axis.text=element_text(size=10),
+  axis.title=element_text(size=12),
+  strip.text = element_text(size=12),
+  legend.position="top")
+
+pl1=(tspag_cnr|tspag_efc|tspag_cjv)
+pl1
+```
+We found that overall Verio ND T1-weighted images had higher CNR ($\beta$=`r round(fixef(res_cnr)[2],2)`, p = `r round(p_cnr,2)`), lower EFC ($\beta$= `r round(fixef(res_efc)[2],2)`, p = `r round(p_cnr,2)`) and lower CJV ($\beta$=`r round(fixef(res_cjv)[2],2)`, p = `r round(p_cnr,2)`) compared to the Skyra D images, also see Figure \@ref(fig:plotqadiff). This indicates overall better data quality on the Verio scanner.
+  
+```{r difference between acquisitions on same scanner, echo=FALSE}
+res_cnr=lmer(cnr ~ acq + (1|subj), data=qa[(qa$scanner=="SKYRA"),]) 
+null_cnr=lmer(cnr ~ (1|subj), data=qa[(qa$scanner=="SKYRA"),]) 
+anova_cnr_Skyra =anova(res_cnr,null_cnr)
+
+p_Skyra_cnr=anova_cnr_Skyra$`Pr(>Chisq)`[2]
+```
+
+```{r plotcnruncorrwskyra,fig.cap="CNR differences between the Skyra ND and D acquisitions (left panel) and between Skyra and Verio ND acquisitions (right panel), showing higher CNR irrespective of gradient distortion on the Verio scanner", fig.width=6, fig.height=4,  echo=FALSE}
+tspag_wSkyra = ggplot(qa[(qa$Scanner=="Skyra"),], aes(x=Acquisition, y=cnr, fill=Acquisition)) + 
+  geom_boxplot()+
+  labs(subtitle="CNR differences between \nSkyra D and ND acquisitions")+
+  xlab(bquote("Acquisition")) + 
+  ylab(bquote('CNR')) + 
+  scale_fill_manual(values=wes_palette("Moonrise2",2,type="discrete")) +
+  theme(axis.text=element_text(size=10),
+  axis.title=element_text(size=12),
+  strip.text = element_text(size=12),
+  legend.position="top")
+
+tspag_ND = ggplot(qa[(qa$Acquisition=="D"),], aes(x=Scanner, y=cnr, fill=Scanner)) + 
+  geom_boxplot()+
+  labs(subtitle="CNR differences between \nND acquisitions")+
+  scale_fill_manual(values=wes_palette("FantasticFox1",2,type="discrete")) +
+  xlab(bquote("Scanner")) + 
+  ylab(bquote('CNR')) + 
+  theme(axis.text=element_text(size=10),
+  axis.title=element_text(size=12),
+  strip.text = element_text(size=12),
+  legend.position="top")
+
+pl2=(tspag_wSkyra|tspag_ND)
+pl2
+
+```
+
+```{r difference between ND acquisitions verio/skyra, echo=FALSE}
+res_ND_comparison=lmer(cnr ~ scanner + (1|subj), data=qa[(qa$acq=="D"),]) 
+null_ND_comparison=lmer(cnr ~ (1|subj), data=qa[(qa$acq=="D"),]) 
+anova_ND_comparison =anova(res_ND_comparison,null_ND_comparison)
+
+p_ND_comparison=anova_ND_comparison$`Pr(>Chisq)`[2]
+```
+When comparing the acquisitions with and without vendor-provided online gradient distortion correction on the Skyra scanner ("D" and "ND"), we observed that the distortion correction increased CNR ($\beta$=`r round(fixef(res_cnr)[2],3)`,p = `r round(p_Skyra_cnr,2)`, see Figure \@ref(fig:plotcnruncorrwskyra), left panel). When only considering ND acquisitions from both scanners, we also see higher CNR on the Verio scanner (($\beta$=`r round(fixef(res_ND_comparison)[2],3)`,p = `r round(p_ND_comparison,2)`, see Figure \@ref(fig:plotcnruncorrwskyra), right panel) This indicates that other factors than distortion correction underlie higher CNR on the Verio scanner.
+
+
+```{r difference between acquisitions on same acquisition, echo=FALSE}
+res_cnr=lmer(cnr ~ scanner + (1|subj), data=qa[(qa$acq=="D"),]) 
+null_cnr=lmer(cnr ~ (1|subj), data=qa[(qa$acq=="D"),]) 
+anov_ND_cnr=anova(res_cnr,null_cnr)
+p_ND_cnr=anov_ND_cnr$`Pr(>Chisq)`[2]
+
+res_cjv=lmer(cjv ~ scanner + (1|subj), data=qa[(qa$acq=="D"),]) 
+null_cjv=lmer(cjv ~ (1|subj), data=qa[(qa$acq=="D"),]) 
+anov_ND_cjv=anova(res_cjv,null_cjv)
+p_ND_cjv=anov_ND_cjv$`Pr(>Chisq)`[2]
+
+res_efc=lmer(efc ~ scanner + (1|subj), data=qa[(qa$acq=="D"),]) 
+null_efc=lmer(efc ~ (1|subj), data=qa[(qa$acq=="D"),]) 
+anov_ND_efc=anova(res_efc,null_efc)
+p_ND_efc=anov_ND_efc$`Pr(>Chisq)`[2]
+```
+
+Similar to [@SHUTER2008371], we investigated whether increased CNR would predict differences in CT. Here, we found that higher CNR across both scanners was associated with higher CT for most regions (see Figure \@ref(fig:plotcnrct), left panel). Moreover, scanner predicted CT independent of CNR in the same regions as shown above (see Figure \@ref(fig:plotcnrct), right panel, and Table 4.1 in the Supplementary Material).   
+
+```{r correlation of PD and CNR, echo=FALSE}
+aparc_ct_l$subj=aparc_ct_l$subj.ID
+
+merged_qa=merge(qa[!is.na(qa$scanner),c("subj","scanner","cnr")],aparc_ct_l, by=c("subj","scanner"))
+cnr_th_table=create_cnr_th_table(merged_qa)
+```
+
+```{r prepare effect of cnr on CT, echo=FALSE}
+lh_region_value_list = cnr_th_table[cnr_th_table$hemi=="lh","est_cnr"];       
+names(lh_region_value_list) = cnr_th_table[cnr_th_table$hemi=="lh","ROI"] 
+rh_region_value_list = cnr_th_table[cnr_th_table$hemi=="rh","est_cnr"];       
+names(rh_region_value_list) = cnr_th_table[cnr_th_table$hemi=="rh","ROI"]                    
+
+# Now we have region_value_lists for both hemispheres. Time to visualize them:
+vis.region.values.on.subject(template_subjects_dir, template_subject, atlas, lh_region_value_list, rh_region_value_list, views=c('t4'), draw_colorbar="horizontal",rglactions = list("snapshot_png"="corr_cnr_thickness.png"), makecmap_options=list('colFn'=makecmap_pd,'symm'=TRUE));
+
+lh_region_value_list = cnr_th_table[cnr_th_table$hemi=="lh","est_scanner"];       
+names(lh_region_value_list) = cnr_th_table[cnr_th_table$hemi=="lh","ROI"] 
+rh_region_value_list = cnr_th_table[cnr_th_table$hemi=="rh","est_scanner"];       
+names(rh_region_value_list) = cnr_th_table[cnr_th_table$hemi=="rh","ROI"]   
+vis.region.values.on.subject(template_subjects_dir, template_subject, atlas, lh_region_value_list, rh_region_value_list, views=c('t4'), draw_colorbar="horizontal", rglactions = list("snapshot_png"="corr_cnr_thickness_scanner.png"),makecmap_options=list('colFn'=makecmap_pd,'symm'=TRUE));
+```
+
+```{r plotcnrct, echo=FALSE, out.width="49%", out.height="30%", fig.cap="Association of CNR (left panel) and scanner (right panel, negative values indicate Skyra>Verio) with cortical thickness, shown as coefficients from a linear mixed model including both terms. Left column shows lateral and medial view of right hemisphere, right column shows lateral and medial view of left hemisphere",fig.show='hold',fig.align='center'}
+cnr_ct=c("corr_cnr_thickness.png","corr_cnr_thickness_scanner.png")
+knitr::include_graphics(cnr_ct)
+```
+
+Figure \@ref(fig:exempleregionscnrCT) shows the association of CNR and CT for two exemplary regions with contrary scanner effects (superior frontal and lateral occipital).
+
+```{r example plot of regions, cache=TRUE, echo=FALSE}
+rh_region_value_list= c(5)
+names(rh_region_value_list) = c("superiorfrontal")
+
+vis.region.values.on.subject(template_subjects_dir, template_subject, atlas, rh_region_value_list, rh_region_value_list, views=c('t4'), draw_colorbar="horizontal",rglactions = list("snapshot_png"="example_regions_supf.png"),makecmap_options=list('colFn'=makecmap_pd,'symm'=TRUE))
+
+rh_region_value_list= c(-5)
+names(rh_region_value_list) = c("lateraloccipital")
+
+vis.region.values.on.subject(template_subjects_dir, template_subject, atlas, rh_region_value_list, rh_region_value_list, views=c('t4'), draw_colorbar="horizontal",rglactions = list("snapshot_png"="example_regions_lato.png"),makecmap_options=list('colFn'=makecmap_pd,'symm'=TRUE))
+
+```
+```{r exempleregionscnrCT_old, echo=FALSE, fig.width = 8, fig.height=5, fig.cap="Association of CNR and cortical thickness in two regions of the left hemisphere",fig.show='hold',fig.align='center'}
+merged_qa$Scanner=merged_qa$scanner
+supfr=ggplot(merged_qa, aes(x=cnr, y=superiorfrontal, color=Scanner),width=6, height=3,) + 
+  geom_point()+
+  geom_smooth(method = lm)+
+  labs(subtitle="Association of CNR and \nsuperiorfrontal cortical thickness")+
+  xlab(bquote("CNR")) + 
+  ylab(bquote('lh superiorfrontal cortical thickness')) + 
+  scale_color_manual(values=c("dodgerblue", "dodgerblue4")) +
+  theme(axis.text=element_text(size=12),
+  axis.title=element_text(size=14),
+  strip.text = element_text(size=14),
+  legend.position="top")
+  ggsave("supfrontal.png", supfr, dpi=300,width=12, height=10, units = "cm")
+
+
+latocc=ggplot(merged_qa, aes(x=cnr, y=lateraloccipital	, color=Scanner)) + 
+  geom_point()+
+  geom_smooth(method = lm)+
+  labs(subtitle="Association of CNR and \nlateraloccipital cortical thickness")+
+  xlab(bquote("CNR")) + 
+  ylab(bquote('lh lateraloccipital cortical thickness')) + 
+  scale_color_manual(values=c("firebrick1", "firebrick4")) +
+  theme(axis.text=element_text(size=12),
+  axis.title=element_text(size=14),
+  strip.text = element_text(size=14),
+  legend.position="top")
+ggsave("latocc.png", latocc, width=12, height=10, dpi=300, units = c("cm"))
+#(latocc|supfr)
+```
+
+```{r exempleregionscnrCT, echo=FALSE, out.width="49%", out.height="30%", fig.cap="Association of CNR and cortical thickness in left superior frontal and lateral occipital cortex",fig.show='hold',fig.align='center'}
+latocc_supfr=c("supfrontal.png","latocc.png")
+knitr::include_graphics(latocc_supfr)
+```
+
+## Effect of offline gradient distortion correction
+We examined whether the differences in cortical and subcortical GM measures arise from the difference in gradient distortion between the two scanners. We corrected both ND files using vendor-provided information on gradient distortions with `gradunwarp`. 
+```{r create unwarped thickness table, echo=FALSE}
+#there is none complete data for some subjects, which are probably running right now.
+aparc_ct_l=create_long_table_aparc(aparc_unw, "thickness")
+
+#---- calculate ICC and PD for FreeSurfer cortical thickness----
+icc_res_th_unw<-create_icc_table_aparc(aparc_ct_l)
+colnames(icc_res_th_unw)=c("ROI","hemi","ICC", "lower ICC", "upper ICC", "PD", "T", "p", "adj.p")
+```
+
+```{r prepare unwarped thickness ICC + PD plots, cache=TRUE, echo=FALSE}
+lh_region_value_list=icc_res_th_unw[icc_res_th_unw$hemi=="lh","ICC"]
+names(lh_region_value_list) = icc_res_th_unw[icc_res_th_unw$hemi=="lh","ROI"] 
+rh_region_value_list=icc_res_th_unw[icc_res_th_unw$hemi=="rh","ICC"]
+names(rh_region_value_list) = icc_res_th_unw[icc_res_th_unw$hemi=="rh","ROI"] 
+
+vis.region.values.on.subject(template_subjects_dir, template_subject, atlas, lh_region_value_list, rh_region_value_list, views=c('t4'), draw_colorbar="horizontal",rglactions = list("snapshot_png"="icc_th_unwarped.png"))
+
+lh_region_value_list=icc_res_th_unw[icc_res_th_unw$hemi=="lh","PD"]
+names(lh_region_value_list) = icc_res_th_unw[icc_res_th_unw$hemi=="lh","ROI"] 
+rh_region_value_list=icc_res_th_unw[icc_res_th_unw$hemi=="rh","PD"]
+names(rh_region_value_list) = icc_res_th_unw[icc_res_th_unw$hemi=="rh","ROI"] 
+vis.region.values.on.subject(template_subjects_dir, template_subject, atlas,  rh_region_value_list,lh_region_value_list, views=c('t4'), draw_colorbar="horizontal",makecmap_options=list('colFn'=makecmap_pd,'symm'=TRUE), rglactions = list("snapshot_png"="pd_th_unwarped.png"));
+```
+
+```{r plotthICCPDunwarped, echo=FALSE, out.width="49%", out.height="30%", fig.cap="Comparison of CT results from gradunwarp-corrected data. Left panel: CT ICC, right panel: CT PD (for each panel, left column shows lateral and medial view of right hemisphere, right column shows lateral and medial view of left hemisphere), negative values:Skyra>Verio, positive values: Verio>Skyra",fig.show='hold',fig.align='center'}
+thickness_icc_pd_unw=c("icc_th_unwarped.png","pd_th_unwarped.png")
+knitr::include_graphics(thickness_icc_pd_unw)
+```
+
+```{r compare ICC and PD between normal & unwarped, echo=FALSE}
+t_res=t.test(icc_res_th$ICC, icc_res_th_unw$ICC, paired=TRUE)
+mean_ct=mean(icc_res_th$ICC)
+mean_ct_unw=mean(icc_res_th_unw$ICC)
+
+t_res_pd=t.test(abs(icc_res_th$PD), abs(icc_res_th_unw$PD), paired=TRUE)
+mean_pd_ct=mean(abs(icc_res_th$PD))
+mean_pd_ct_unw=mean(abs(icc_res_th_unw$PD))
+```
+
+Figure \@ref(fig:plotthICCPDunwarped) shows the results for CT derived from the `gradunwarp` distortion corrected data (also see Table 5.1 in the Supplementary Material).   
+The ICC was excellent throughout all ROI (mean= `r round(mean(icc_res_th_unw$ICC),2)`, min=`r round(min(icc_res_th_unw$ICC),2)`, max=`r round(max(icc_res_th_unw$ICC),2)`), and as expected, it is higher for the gradient distortion corrected data compared to the previous analysis of Verio ND vs Skyra D (mean ICC `gradunwarp` Skyra D vs Verio D: `r round(mean_ct_unw,2)`, mean ICC Skyra D vs Verio ND: `r round(mean_ct,2)`,  paired t-test: T = `r round(mean(t_res$statistic),2)`, p = `r round(mean(t_res$p.value),3)`.     
+PD was around 1-3% (mean=`r round(mean(icc_res_th_unw$PD),2)`%, min=`r round(min(icc_res_th_unw$PD),2)`%, max=`r round(max(icc_res_th_unw$PD),2)`%. Accordingly, a paired t-test shows that the systematic differences between scanners slightly decreased after gradient distortion correction (mean PD `gradunwarp` Skyra D vs Verio D: `r round(mean_pd_ct_unw,2)`, mean PD Skyra D vs Verio ND: `r round(mean_pd_ct,2)`, paired t-test: T = `r round(mean(t_res_pd$statistic),2)`, p= `r round(mean(t_res_pd$p.value),2)`). Yet, there were still significant differences after `gradunwarp` for most regions of interest (FDR-corrected, `r round((nrow(icc_res_th_unw[icc_res_th_unw$p<0.05,])*100/64),1)`% of 64 bilateral cortical ROIs). 
+
+```{r create subcort table unwarped, echo=FALSE}
+vol_l=create_long_table_subcort(vol_unw)
+icc_res_vol_unw<-create_icc_table_vol(vol_l)
+colnames(icc_res_vol_unw)=c("ROI","hemi","ICC", "lower ICC", "upper ICC","PD", "T","p", "adj.p")
+```
+
+```{r tab6volunwarped, echo=FALSE}
+table_vol_unw=
+icc_res_vol_unw %>%
+   mutate(
+     adj.p = cell_spec(adj.p, "latex", bold = ifelse(adj.p < 0.05, T, F))
+   )  %>%
+  #select(p_adjust) %>%
+  kable("latex", escape = F, caption="Reliability and percent difference for subcortical volumes from gradient non-linearity corrected data (T<0 reflects Skyra >Verio , T>0 reflects Verio >Skyra )") %>%
+  kable_styling(bootstrap_options = c("striped", "hover"))
+table_vol_unw
+```
+  
+```{r compare subcort volume ICC and PD between normal & unwarped, echo=FALSE}
+t_res=t.test(icc_res_vol$ICC, icc_res_vol_unw$ICC, paired=TRUE)
+mean_ct=mean(icc_res_vol$ICC)
+mean_ct_unw=mean(icc_res_vol_unw$ICC)
+
+t_res_pd=t.test(abs(icc_res_vol$PD), abs(icc_res_vol_unw$PD), paired=TRUE)
+mean_pd_ct=mean(abs(icc_res_vol$PD))
+mean_pd_ct_unw=mean(abs(icc_res_vol_unw$PD))
+```  
+  Table \@ref(tab:tab6volunwarped) shows the results for subcortical volumes derived from the gradient distortion corrected data.  
+The ICC is excellent in all regions, similar to the cortical analysis (mean= `r round(mean(icc_res_vol_unw$ICC),2)`, min=`r round(min(icc_res_vol_unw$ICC),2)`, max=`r round(max(icc_res_vol_unw$ICC),2)`). For subcortical volumes, gradient distortion correction did not lead to a further improvement in ICC (mean ICC `gradunwarp` Skyra D vs Verio D:`r round(mean_ct_unw,2)`, mean ICC Skyra D vs Verio ND: `r round(mean_ct,2)`,  paired t-test: T = `r round(mean(t_res$statistic),2)`, p= `r round(mean(t_res$p.value),4)`).
+The PD was around 2-3% (mean=`r round(mean(icc_res_vol_unw$PD),2)`, min=`r round(min(icc_res_vol_unw$PD),2)`, max=`r round(max(icc_res_vol_unw$PD),2)`) and did not differ from the original analysis (mean PD `gradunwarp` Skyra D vs Verio D: `r round(mean_pd_ct_unw,2)`%, mean PD Skyra D vs Verio ND: `r round(mean_pd_ct,2)`%, paired t-test: T= `r round(mean(t_res_pd$statistic),2)`, p= `r round(mean(t_res_pd$p.value),2)`. There were significant differences after `gradunwarp` for all regions of interest (FDR-corrected, `r round((nrow(icc_res_vol_unw[icc_res_vol_unw$p<0.05,])*100/14),2)`% of 14 bilateral subcortical regions).
+
+\newpage
+
+# Discussion
+**Summary**  
+In this paper, we aimed to investigate the reliability and bias in GM structure induced by a scanner upgrade in a longitudinal study. We compared outcomes of FreeSurfer's longitudinal pipeline between two different MRI scanners with subsequent versions. We found between-scanner reliability measured with ICCs to be excellent. Yet, paired t-tests revealed statistically significant differences, i.e. biases, in GM volume, area and thickness for a large number of cortical and subcortical regions. Offline correction for gradient distortions based on vendor-provided gradient information only slightly reduced these differences. T1-imaging based quality measures differed systematically between scanners, also when adjusting for gradient distortions.  We conclude that scanner upgrades during a longitudinal study introduce bias in measures of cortical and subcortical gray matter structure and make it difficult to detect true effects when these are subtle like in the case of healthy aging, e.g. ~ 1% annual hippocampal volume loss in older healthy adults [@Fraser2015]. Therefore, before upgrading a MRI system during an ongoing longitudinal study, researchers should prepare to implement an appropriate correction method, such as deriving scaling factors from repeated measures before/after the upgrade or statistical adjustment methods.
+
+**Comparison to previous upgrade studies**   
+The results of our study are in line with previous findings which have indicated systematic effects of scanner upgrade on GM imaging outcomes [@RN1336; @RN1327; @RN1328; @RN1339].      
+Notably, in two recent studies, an upgrade from Magnetom Trio to Prismafit induced a significant increase in cortical thickness (CT) and volume as well as differences in subcortical volumes [@potvin2019; @plitman2020impact].  Similar to our findings, ICC values for cortical measures were good to excellent in both studies. While the size of biases was comparable to our results (around 1-5% for cortical PD for CV and CT in [@potvin2019]), the location of the biased regions was different. We found mainly frontal, pre- and paracentral and subcortical regions to be biased towards higher CT and GM volume values in Skyra compared to Verio, while in [@potvin2019; @plitman2020impact] most biased regions were located in prefrontal and temporal regions where CT and GM volume increased with the upgrade.  
+Furthermore, in our study, CNR and other indicators of image quality were higher on the (earlier) Verio scanner, while in studies investigating the effects of real upgrades, image quality (quantified as signal-to-noise ratio (SNR) or CNR) increased after the upgrade [@potvin2019; @plitman2020impact]. Like in previous studies, increased SNR/CNR was associated with higher CT [@SHUTER2008371;@potvin2019] independent of scanner-dependent regional CT differences. This indicates that in our study, other factors than image quality must have contributed to higher CT and GM volumes in Skyra compared to Verio.     
+One possible factor might be gradient distortion correction, which was automatically applied on the Skyra but not on the Verio scanner. According to [@RN1326], gradient distortions may account for 16% of the image intensity relative error, and adjusting for these distortions has previously removed site‐related variations to <1% and increased reliability of the between-site scans to within-site level [@RN1321]. Here, we did not see a substantial reduction of bias when applying offline gradient distortion correction. While for cortical measures, ICC slightly increased and PD decreased, subcortical volumes measures did not change. This is expected, as gradient distortions have most pronounced effects at the edges of the image; therefore their correction will affect objects at the center less than objects in the periphery, leaving subcortical areas nearly unaffected.    
+In line with this finding, scaling differences could be seen when inspecting the whole-brain images of the longitudinal runs (i.e. after registration to a common template) of Verio and Skyra scans. We therefore believe that the systematic biases between Verio and Skyra stem from both scaling and image quality differences, related to scanner hardware.       
+While our results might overestimate the effects of a real upgrade, they still support previous studies on the biasing effects of a scanner upgrade and urge for the use of an adequate correction method if an upgrade becomes necessary during a longitudinal study.  One possibility is to measure the same subjects shortly before and after the upgrade and to derive scaling factors like in [@RN1318]. Another possibility, which does not require additional data acquisition, is longitudinal ComBat correction, which takes into account biased mean and scaling due to systematic scanner differences [@BEER2020117129].
+
+**Limitations**   
+The main limitation of our study is that we did not assess the impact of a true upgrade (i.e. repeated measurements on the same scanner), instead we performed a site-comparison in which the MRI scanners at the two sides were as similar as possible. Another limitation is that we did not acquire multiple scans on the same system, nor randomized the order of participants across scanners. 
+
+**Strengths**  
+Our study is well-powered, which is important to adequately compute reliability with an acceptable confidence interval. Also, we applied region-and brain-wide analyses, adjusted for gradient distortions and calculated complementary measures of reliability. Additionally, we present quantitative quality control measures derived from `mriqc`, a state-of-the-art quality control software.
+
+**Conclusions**    
+Taken together, in this study, we investigated the impact of a scanner upgrade on longitudinal cortical and subcortical GM measures. We found high reliability but strong regional biases in most regions of interest. While we possibly overestimated the effects of a real upgrade, this study still urges for careful monitoring of scanner upgrades and adjustment of biases in longitudinal imaging studies. This may be achieved by deriving scaling factors immediately before/after the upgrade or by using longitudinal batch correction.
+
+\newpage
+
+# References
