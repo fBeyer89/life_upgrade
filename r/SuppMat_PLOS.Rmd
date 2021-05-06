@@ -1,0 +1,341 @@
+---
+title: "Supplementary Material for 'Estimating the effect of a scanner upgrade on measures of grey matter structure for longitudinal designs'"
+author:
+  - Evelyn Medawar, MSc [1]
+  - Ronja Thieleking, MSc [1]
+  - Iryna Manuilova, BSc [1]
+  - Maria Paerisch[1]
+  - Arno Villringer, Prof. [1][2][3]
+  - A. Veronica Witte, PhD [1][2]
+  - Frauke Beyer, PhD [1][2]
+date: 1 Max-Planck-Institute for Human Cognitive and Brain Sciences, Leipzig \newline 2 CRC 1052 "Obesity Mechanisms", Subproject A1, University of Leipzig \newline 3 Day Clinic for Cognitive Neurology, University Clinic Leipzig
+output:
+  bookdown::pdf_book: 
+    fig_caption: yes
+    always_allow_html: true
+    number_sections: yes
+    toc: yes
+    extra_dependencies: ["float"]
+bibliography: "bibliography.bib" 
+
+---
+
+```{r "Package loading", include=FALSE}
+library(lme4)
+library(ggplot2)
+library(haven)
+library(plyr)
+library(dplyr)
+library(tidyr)
+library(knitr)
+library(psych)
+library(psy)
+library(boot)
+library(MuMIn)
+library(kableExtra)
+library(patchwork)
+library(wesanderson)
+library(lmerTest)
+library(lsr)
+options(knitr.table.format = "latex")
+library(cowplot)
+source("icc_table.R")
+source("create_long_table.R")
+source("cnr_rh_table.R")
+knitr::opts_chunk$set(echo=FALSE, message=FALSE, warning=FALSE, fig.height=2, fig.width=4)
+
+
+library(fsbrain)
+atlas = 'aparc';
+template_subject = 'fsaverage';
+template_subjects_dir = "/data/pt_nro186_lifeupdate/Data/FREESURFER/FREESURFER_long/"; 
+library('rgl');
+r3dDefaults$windowRect=c(50, 50, 500, 500);
+
+#makecmap_th = colorRampPalette(RColorBrewer::brewer.pal(9, name="YlOrRd"));
+makecmap_pd = colorRampPalette(RColorBrewer::brewer.pal(9, name="RdBu"));
+
+
+
+aparc_ct=read.csv("data/aparc_ct_update.csv")
+aparc_area=read.csv("data/aparc_area_update.csv")
+aparc_volume=read.csv("data/aparc_volume_update.csv")
+```
+
+```{r create thickness table, echo=FALSE}
+aparc_ct_l=create_long_table_aparc(aparc_ct,"thickness")
+#---- calculate ICC and PD for FreeSurfer cortical thickness----
+icc_res_th<-create_icc_table_aparc(aparc_ct_l)
+colnames(icc_res_th)=c("ROI","hemi","ICC", "lower ICC", "upper ICC", "PD", "T", "p", "adj.p")
+```
+
+```{r create area table, echo=FALSE}
+aparc_area_l=create_long_table_aparc(aparc_area, "area")
+#---- calculate ICC and PD for FreeSurfer cortical area----
+icc_res_area<-create_icc_table_aparc(aparc_area_l)
+colnames(icc_res_area)=c("ROI","hemi","ICC", "lower ICC", "upper ICC", "PD", "T", "p", "adj.p")
+```
+
+```{r create volume table, echo=FALSE}
+aparc_volume_l=create_long_table_aparc(aparc_volume,"volume")
+#---- calculate ICC and PD for FreeSurfer cortical volume----
+icc_res_vol<-create_icc_table_aparc(aparc_volume_l)
+colnames(icc_res_vol)=c("ROI","hemi","ICC", "lower ICC", "upper ICC", "PD", "T", "p", "adj.p")
+```
+
+```{r create QA measures table, echo=FALSE}
+qa=read.csv("data/mriqc_measures.csv")
+for (i in 1:nrow(qa)){
+  #print(i)
+  #print(qa[i,1])
+  tmp=strsplit(toString(qa[i,1]),'_')[[1]]
+  #print(tmp)
+  qa[i,"subj"]=tmp[1]
+  qa[i,"scanner"]=tmp[2]
+  qa[i,"acq"]=tmp[3]
+}
+
+qa$Scanner=as.factor(qa$scanner)
+levels(qa$Scanner)=c("Skyra","Verio")
+qa$Acquisition=as.factor(qa$acq)
+levels(qa$Acquisition)=c("D","ND")
+```
+
+```{r correlation of PD and CNR, echo=FALSE}
+for (i in 1:nrow(aparc_ct_l[1:418,])){
+  aparc_ct_l[i,"subj"]=paste("sub-",strsplit(toString(aparc_ct_l[i,"subj.ID"]),'[.]')[[1]][1],strsplit(toString(aparc_ct_l[i,"subj.ID"]),'[.]')[[1]][2],sep="")
+}
+aparc_ct_l[419:464,"subj"]=paste("sub-",aparc_ct_l[419:464,"subj.ID"],sep="")
+aparc_ct_l$scanner_m=aparc_ct_l$scanner
+
+qa[qa$scanner=="ses-VER1","scanner_m"]="VERIO"
+qa[qa$scanner=="ses-SKYRA"&qa$acq=="acq-D","scanner_m"]="SKYRA"
+qa$subj.ID=qa$subj
+qa$scanner_m=qa$scanner
+merged_qa=merge(qa[!is.na(qa$scanner_m),c("subj.ID","scanner_m","cnr")],aparc_ct_l, by=c("subj.ID","scanner_m"))
+cnr_th_table=create_cnr_th_table(merged_qa)
+```
+
+```{r create unwarped thickness table, echo=FALSE}
+aparc_unw=read.csv("data/aparc_ct_unw.csv")
+aparc_ct_l=create_long_table_aparc(aparc_unw, "thickness")
+
+#---- calculate ICC and PD for FreeSurfer cortical thickness----
+icc_res_th_unw<-create_icc_table_aparc(aparc_ct_l)
+colnames(icc_res_th_unw)=c("ROI","hemi","ICC", "lower ICC", "upper ICC", "PD", "T", "p", "adj.p")
+```
+
+
+
+\newpage
+
+
+# Bland-Altman plot for all subcortical ROI
+```{r blandaltmanallinone, eval=TRUE, echo=FALSE, out.width="100%", fig.cap="Bland-Altman plot showing differences of Verio-Skyra against means for all subcortical ROI. Left/right panel show left/right hemisphere.)",fig.show='hold',fig.align='center'}
+Subcort_BA_allinone=("figures/Bland_Altmann_plot_subcort_allinone.png")
+knitr::include_graphics(Subcort_BA_allinone)
+```
+\newpage
+
+
+# Cortical thickness 
+## Vertex-wise analysis of cortical thickness ICC
+```{r vertexthicc, echo=FALSE,out.width="49%", out.height="30%",fig.cap="ICC for cortical thickness (CT) on white surface (left panel) and inflated surface (right panel)",fig.show='hold',fig.align='center'}
+thickness_ICC=c("figures/pial/thickness_sm10_ICC.png","figures/thickness_sm10_ICC.png")
+knitr::include_graphics(thickness_ICC)
+```
+## Vertex-wise analysis of cortical thickness PD
+
+```{r vertexthpd, echo=FALSE,out.width="49%", out.height="30%",fig.cap="PD for cortical thickness (CT) on white surface (left panel) and inflated surface (right panel). Positive values: Verio>Skyra , negative values: Verio<Skyra ))",fig.show='hold',fig.align='center'}
+pd_th=c("figures/pial/thickness_sm10_pd.png","figures/thickness_sm10_pd.png")
+knitr::include_graphics(pd_th)
+```
+## Reliability and percent difference table of cortical thickness
+
+```{r tab1thickness, echo=FALSE}
+table_th=
+  icc_res_th %>%
+    mutate(
+      adj.p = cell_spec(adj.p, "latex", bold = ifelse(adj.p < 0.05, T, F))
+    )  %>%
+   kable("latex", escape = F, caption="Reliability and differences for cortical thickness") %>%
+   kable_styling(bootstrap_options = c("striped", "hover"))
+table_th
+```
+\newpage
+# Cortical area 
+## Vertex-wise analysis of cortical area ICC
+
+```{r vertexareaicc, echo=FALSE,out.width="49%", out.height="30%",fig.cap="ICC for cortical area (CA) on white surface (left panel) and inflated surface (right panel)",fig.show='hold',fig.align='center'}
+area_ICC=c("figures/pial/area_sm10_ICC.png","figures/area_sm10_ICC.png")
+knitr::include_graphics(area_ICC)
+```
+## Vertex-wise analysis of cortical area PD
+
+```{r vertexareapd, echo=FALSE,out.width="49%", out.height="30%",fig.cap="PD for cortical area (CA) on white surface (left panel) and inflated surface (right panel). Positive values: Verio>Skyra , negative values: Verio<Skyra ))",fig.show='hold',fig.align='center'}
+pd_area=c("figures/pial/area_sm10_pd.png","figures/area_sm10_pd.png")
+knitr::include_graphics(pd_area)
+```
+## Reliability and percent difference table of cortical area
+
+```{r tab2area,echo=FALSE}
+table_area=
+icc_res_area %>%
+   mutate(
+     adj.p = cell_spec(adj.p, "latex", bold = ifelse(adj.p < 0.05, T, F))
+   )  %>%
+  #select(p_adjust) %>%
+  kable("latex", escape = F, caption="Reliability and differences for cortical area") %>%
+  kable_styling(bootstrap_options = c("striped", "hover"))
+table_area
+```
+\newpage
+# Cortical volume 
+## Vertex-wise analysis of cortical volume ICC
+
+```{r vertexvolumeicc, echo=FALSE,out.width="49%", out.height="30%",fig.cap="ICC for cortical volume (CV) on white surface (left panel) and inflated surface (right panel)",fig.show='hold',fig.align='center'}
+volume_ICC=c("figures/pial/volume_sm10_ICC.png","figures/volume_sm10_ICC.png")
+knitr::include_graphics(volume_ICC)
+```
+## Vertex-wise analysis of cortical volume PD
+
+```{r vertexvolumepd, echo=FALSE, out.width="49%", out.height="30%",fig.cap="PD for cortical volume (CV) on white surface (left panel) and inflated surface (right panel). Positive values: Verio>Skyra , negative values: Verio<Skyra ))",fig.show='hold',fig.align='center'}
+pd_volume=c("figures/pial/volume_sm10_pd.png","figures/volume_sm10_pd.png")
+knitr::include_graphics(pd_volume)
+```
+## Reliability and percent difference table of cortical volume
+
+```{r tab3volume,echo=FALSE}
+table_vol=
+  icc_res_vol %>%
+   mutate(
+     adj.p = cell_spec(adj.p, "latex", bold = ifelse(adj.p < 0.05, T, F))
+   )  %>%
+  #select(p_adjust) %>%
+  kable("latex", escape = F, caption="Reliability and differences for cortical volume") %>%
+  kable_styling(bootstrap_options = c("striped", "hover"))
+table_vol
+```
+\newpage
+# Correlation of CNR and CT
+
+```{r cnrcttab, echo=FALSE}
+colnames(cnr_th_table)=c("ROI","hemi","CNR estimate", "scanner estimate", "p CNR","p scanner", "adj.p.CNR","adj.p.scanner")
+cnr_th_table[,c(-1,-2)]=round(cnr_th_table[,c(-1,-2)],3)
+cnrcttab=
+  cnr_th_table %>%
+   mutate(
+     adj.p.CNR = cell_spec(adj.p.CNR, "latex", bold = ifelse(adj.p.CNR < 0.05, T, F))
+   )  %>%
+  mutate(
+     adj.p.scanner = cell_spec(adj.p.scanner, "latex", bold = ifelse(adj.p.scanner < 0.05, T, F))
+   )   %>%
+  kable("latex", escape = F, caption="Association of CNR and scanner with CT") %>%
+  kable_styling(bootstrap_options = c("striped", "hover"))
+cnrcttab
+```
+\newpage
+
+# Gradunwarp gradient distortion corrected data
+## Vertex-wise analysis of gradunwarp distortion-corrected ICC
+```{r vertexthiccunwarped, echo=FALSE,out.width="49%", out.height="30%",fig.cap="ICC for cortical thickness (CT) of gradunwarp Skyra ND and Verio ND on white surface (left panel) and inflated surface (right panel)",fig.show='hold',fig.align='center'}
+thickness_ICC=c("figures/unwarped/thickness_sm10_ICC.png", "figures/unwarped/thickness_sm10_ICC_inf.png")
+knitr::include_graphics(thickness_ICC)
+```
+## Vertex-wise analysis of gradunwarp distortion-corrected PD
+
+```{r vertexthpdunwarped, echo=FALSE,out.width="49%", out.height="30%",fig.cap="PD for cortical thickness (CT) of gradunwarp Skyra ND and Verio ND on white surface (left panel) and inflated surface (right panel) Positive values: Verio>Skyra , negative values: Verio<Skyra ))",fig.show='hold',fig.align='center'}
+pd_th=c("figures/unwarped/thickness_sm10_pd.png","figures/unwarped/thickness_sm10_pd_inf.png")
+knitr::include_graphics(pd_th)
+```
+
+```{r tab5thunwarped, echo=FALSE}
+table_th_unw=
+icc_res_th_unw %>%
+    mutate(
+      adj.p = cell_spec(adj.p, "latex", bold = ifelse(adj.p < 0.05, T, F))
+    )  %>%
+   kable("latex", escape = F, caption="Reliability and percent difference for CT from gradunwarp distortion corrected data (T<0 reflects Skyra >Verio , T>0 reflects Verio >Skyra )") %>%
+   kable_styling(bootstrap_options = c("striped", "hover"))
+table_th_unw
+```
+
+# Skyra D versus Verio ND analysis
+```{r create former main (skyra_d vs verio_nd) thickness table, echo=FALSE}
+#there is none complete data for some subjects, which are probably running right now.
+aparc_veriond_skyrad=read.csv("data/aparc_ct_veriond_skyrad.csv")
+aparc_ct_l=create_long_table_aparc(aparc_veriond_skyrad, "thickness")
+
+#---- calculate ICC and PD for FreeSurfer cortical thickness----
+icc_res_th_main<-create_icc_table_aparc(aparc_ct_l)
+colnames(icc_res_th_main)=c("ROI","hemi","ICC", "lower ICC", "upper ICC", "PD", "T", "p", "adj.p")
+```
+
+```{r tab6main, echo=FALSE}
+table_th_main=
+icc_res_th_main %>%
+    mutate(
+      adj.p = cell_spec(adj.p, "latex", bold = ifelse(adj.p < 0.05, T, F))
+    )  %>%
+   kable("latex", escape = F, caption="Reliability and percent difference for cortical thickness from Skyra D versus Verio ND data (T<0 reflects Skyra >Verio , T>0 reflects Verio >Skyra )") %>%
+   kable_styling(bootstrap_options = c("striped", "hover"))
+table_th_main
+```
+
+# QA differences
+
+```{r plotcnruncorrwskyra,fig.cap="CNR differences between the Skyra D and ND acquisitions (left panel) and between Skyra D and Verio ND acquisitions (right panel), showing higher CNR irrespective of gradient distortion on the Verio scanner", fig.width=6, fig.height=4,  echo=FALSE}
+tspag_wSkyra = ggplot(qa[(qa$scanner=="ses-SKYRA"),], aes(x=Acquisition, y=cnr, fill=Acquisition)) + 
+  geom_boxplot()+
+  labs(subtitle="CNR differences between \nSkyra D and ND acquisitions")+
+  xlab(bquote("Acquisition")) + 
+  ylab(bquote('CNR')) + 
+  scale_fill_manual(values=wes_palette("Moonrise2",2,type="discrete")) +
+  theme(axis.text=element_text(size=10),
+  axis.title=element_text(size=12),
+  strip.text = element_text(size=12),
+  legend.position="top")
+
+tspag_ND = ggplot(qa[!(qa$Acquisition=="ND"),], aes(x=Scanner, y=cnr, fill=Scanner)) + 
+  geom_boxplot()+
+  labs(subtitle="CNR differences between Skyra D\nand Verio ND acquisitions")+
+  scale_fill_manual(values=wes_palette("Moonrise2",2,type="discrete")) +
+  xlab(bquote("Scanner")) + 
+  ylab(bquote('CNR')) + 
+  theme(axis.text=element_text(size=10),
+  axis.title=element_text(size=12),
+  strip.text = element_text(size=12),
+  legend.position="top")
+
+pl2=(tspag_wSkyra|tspag_ND)
+pl2
+
+ggsave("/data/pt_nro186_lifeupdate/Results/GMV_project_evelyn_frauke/Analysis_R/Figures/PLOS/Revision/SuppFig1.eps", pl2, dpi=300,width=14, units = "cm")
+```
+
+```{r difference between acquisitions on same scanner, echo=FALSE}
+res_cnr=lmer(cnr ~ acq + (1|subj), data=qa[(qa$scanner=="SKYRA"),]) 
+null_cnr=lmer(cnr ~ (1|subj), data=qa[(qa$scanner=="SKYRA"),]) 
+anova_cnr_Skyra =anova(res_cnr,null_cnr)
+
+p_Skyra_cnr=anova_cnr_Skyra$`Pr(>Chisq)`[2]
+```
+When comparing the acquisitions with and without vendor-provided online gradient distortion correction on the Skyra scanner (D and ND), we observed that the distortion correction increased CNR ($\beta$=`r round(fixef(res_cnr)[2],3)`, p < 0.001, see Figure \@ref(fig:plotcnruncorrwskyra), left panel). 
+
+```{r difference between ND acquisitions verio/skyra, echo=FALSE}
+res_cnr=lmer(cnr ~ scanner + (1|subj), data=qa[(qa$acq=="D"),]) 
+null_cnr=lmer(cnr ~ (1|subj), data=qa[(qa$acq=="D"),]) 
+anov_ND_cnr=anova(res_cnr,null_cnr)
+p_ND_cnr=anov_ND_cnr$`Pr(>Chisq)`[2]
+
+res_cjv=lmer(cjv ~ scanner + (1|subj), data=qa[(qa$acq=="D"),]) 
+null_cjv=lmer(cjv ~ (1|subj), data=qa[(qa$acq=="D"),]) 
+anov_ND_cjv=anova(res_cjv,null_cjv)
+p_ND_cjv=anov_ND_cjv$`Pr(>Chisq)`[2]
+
+res_efc=lmer(efc ~ scanner + (1|subj), data=qa[(qa$acq=="D"),]) 
+null_efc=lmer(efc ~ (1|subj), data=qa[(qa$acq=="D"),]) 
+anov_ND_efc=anova(res_efc,null_efc)
+p_ND_efc=anov_ND_efc$`Pr(>Chisq)`[2]
+```
+When comparing Verio ND and Skyra D, we also see higher CNR on the Verio scanner ($\beta$=`r round(fixef(res_cnr)[2],3)`, p < 0.001, see Figure \@ref(fig:plotcnruncorrwskyra), right panel), which is expected given the CNR difference between Verio ND and Skyra ND reported in the main manuscript.
