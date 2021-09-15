@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.21 (TeX Live 2020) (preloaded format=pdflatex 2021.2.5)  6 MAY 2021 13:32
+This is pdfTeX, Version 3.14159265-2.6-1.40.21 (TeX Live 2020) (preloaded format=pdflatex 2021.2.5)  15 SEP 2021 10:55
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -22,7 +22,69 @@ File: size10.clo 2020/04/10 v1.4m Standard LaTeX file (size option)
 \abovecaptionskip=\skip47
 \belowcaptionskip=\skip48
 \bibindent=\dimen138
-) (/data/hu_fbeyer/.TinyTeX/texmf-dist/tex/latex/lm/lmodern.sty
+) (/data/hu_fbeyer/.TinyTeX/texmf-dist/tex/latex/amsmath/amsmath.sty
+Package: amsmath 2020/09/23 v2.17i AMS math features
+\@mathmargin=\skip49
+For additional information on amsmath, use the `?' option.
+(/data/hu_fbeyer/.TinyTeX/texmf-dist/tex/latex/amsmath/amstext.sty
+Package: amstext 2000/06/29 v2.01 AMS text
+(/data/hu_fbeyer/.TinyTeX/texmf-dist/tex/latex/amsmath/amsgen.sty
+File: amsgen.sty 1999/11/30 v2.0 generic functions
+\@emptytoks=\toks15
+\ex@=\dimen139
+)) (/data/hu_fbeyer/.TinyTeX/texmf-dist/tex/latex/amsmath/amsbsy.sty
+Package: amsbsy 1999/11/29 v1.2d Bold Symbols
+\pmbraise@=\dimen140
+) (/data/hu_fbeyer/.TinyTeX/texmf-dist/tex/latex/amsmath/amsopn.sty
+Package: amsopn 2016/03/08 v2.02 operator names
+)
+\inf@bad=\count185
+LaTeX Info: Redefining \frac on input line 234.
+\uproot@=\count186
+\leftroot@=\count187
+LaTeX Info: Redefining \overline on input line 399.
+\classnum@=\count188
+\DOTSCASE@=\count189
+LaTeX Info: Redefining \ldots on input line 496.
+LaTeX Info: Redefining \dots on input line 499.
+LaTeX Info: Redefining \cdots on input line 620.
+\Mathstrutbox@=\box47
+\strutbox@=\box48
+\big@size=\dimen141
+LaTeX Font Info:    Redeclaring font encoding OML on input line 743.
+LaTeX Font Info:    Redeclaring font encoding OMS on input line 744.
+\macc@depth=\count190
+\c@MaxMatrixCols=\count191
+\dotsspace@=\muskip16
+\c@parentequation=\count192
+\dspbrk@lvl=\count193
+\tag@help=\toks16
+\row@=\count194
+\column@=\count195
+\maxfields@=\count196
+\andhelp@=\toks17
+\eqnshift@=\dimen142
+\alignsep@=\dimen143
+\tagshift@=\dimen144
+\tagwidth@=\dimen145
+\totwidth@=\dimen146
+\lineht@=\dimen147
+\@envbody=\toks18
+\multlinegap=\skip50
+\multlinetaggap=\skip51
+\mathdisplay@stack=\toks19
+LaTeX Info: Redefining \[ on input line 2923.
+LaTeX Info: Redefining \] on input line 2924.
+) (/data/hu_fbeyer/.TinyTeX/texmf-dist/tex/latex/amsfonts/amssymb.sty
+Package: amssymb 2013/01/14 v3.01 AMS font symbols
+(/data/hu_fbeyer/.TinyTeX/texmf-dist/tex/latex/amsfonts/amsfonts.sty
+Package: amsfonts 2013/01/14 v3.01 Basic AMSFonts support
+\symAMSa=\mathgroup4
+\symAMSb=\mathgroup5
+LaTeX Font Info:    Redeclaring math symbol \hbar on input line 98.
+LaTeX Font Info:    Overwriting math alphabet `\mathfrak' in version `bold'
+(Font)                  U/euf/m/n --> U/euf/b/n on input line 106.
+)) (/data/hu_fbeyer/.TinyTeX/texmf-dist/tex/latex/lm/lmodern.sty
 Package: lmodern 2009/10/30 v1.6 Latin Modern Fonts
 LaTeX Font Info:    Overwriting symbol font `operators' in version `normal'
 (Font)                  OT1/cmr/m/n --> OT1/lmr/m/n on input line 22.
@@ -56,69 +118,6 @@ LaTeX Font Info:    Overwriting math alphabet `\mathit' in version `bold'
 (Font)                  OT1/cmr/bx/it --> OT1/lmr/bx/it on input line 37.
 LaTeX Font Info:    Overwriting math alphabet `\mathtt' in version `bold'
 (Font)                  OT1/cmtt/m/n --> OT1/lmtt/m/n on input line 38.
-) (/data/hu_fbeyer/.TinyTeX/texmf-dist/tex/latex/amsfonts/amssymb.sty
-Package: amssymb 2013/01/14 v3.01 AMS font symbols
-(/data/hu_fbeyer/.TinyTeX/texmf-dist/tex/latex/amsfonts/amsfonts.sty
-Package: amsfonts 2013/01/14 v3.01 Basic AMSFonts support
-\@emptytoks=\toks15
-\symAMSa=\mathgroup4
-\symAMSb=\mathgroup5
-LaTeX Font Info:    Redeclaring math symbol \hbar on input line 98.
-LaTeX Font Info:    Overwriting math alphabet `\mathfrak' in version `bold'
-(Font)                  U/euf/m/n --> U/euf/b/n on input line 106.
-)) (/data/hu_fbeyer/.TinyTeX/texmf-dist/tex/latex/amsmath/amsmath.sty
-Package: amsmath 2020/09/23 v2.17i AMS math features
-\@mathmargin=\skip49
-For additional information on amsmath, use the `?' option.
-(/data/hu_fbeyer/.TinyTeX/texmf-dist/tex/latex/amsmath/amstext.sty
-Package: amstext 2000/06/29 v2.01 AMS text
-(/data/hu_fbeyer/.TinyTeX/texmf-dist/tex/latex/amsmath/amsgen.sty
-File: amsgen.sty 1999/11/30 v2.0 generic functions
-\@emptytoks=\toks16
-\ex@=\dimen139
-)) (/data/hu_fbeyer/.TinyTeX/texmf-dist/tex/latex/amsmath/amsbsy.sty
-Package: amsbsy 1999/11/29 v1.2d Bold Symbols
-\pmbraise@=\dimen140
-) (/data/hu_fbeyer/.TinyTeX/texmf-dist/tex/latex/amsmath/amsopn.sty
-Package: amsopn 2016/03/08 v2.02 operator names
-)
-\inf@bad=\count185
-LaTeX Info: Redefining \frac on input line 234.
-\uproot@=\count186
-\leftroot@=\count187
-LaTeX Info: Redefining \overline on input line 399.
-\classnum@=\count188
-\DOTSCASE@=\count189
-LaTeX Info: Redefining \ldots on input line 496.
-LaTeX Info: Redefining \dots on input line 499.
-LaTeX Info: Redefining \cdots on input line 620.
-\Mathstrutbox@=\box47
-\strutbox@=\box48
-\big@size=\dimen141
-LaTeX Font Info:    Redeclaring font encoding OML on input line 743.
-LaTeX Font Info:    Redeclaring font encoding OMS on input line 744.
-\macc@depth=\count190
-\c@MaxMatrixCols=\count191
-\dotsspace@=\muskip16
-\c@parentequation=\count192
-\dspbrk@lvl=\count193
-\tag@help=\toks17
-\row@=\count194
-\column@=\count195
-\maxfields@=\count196
-\andhelp@=\toks18
-\eqnshift@=\dimen142
-\alignsep@=\dimen143
-\tagshift@=\dimen144
-\tagwidth@=\dimen145
-\totwidth@=\dimen146
-\lineht@=\dimen147
-\@envbody=\toks19
-\multlinegap=\skip50
-\multlinetaggap=\skip51
-\mathdisplay@stack=\toks20
-LaTeX Info: Redefining \[ on input line 2923.
-LaTeX Info: Redefining \] on input line 2924.
 ) (/data/hu_fbeyer/.TinyTeX/texmf-dist/tex/generic/iftex/ifxetex.sty
 Package: ifxetex 2019/10/25 v0.7 ifxetex legacy package. Use iftex instead.
 (/data/hu_fbeyer/.TinyTeX/texmf-dist/tex/generic/iftex/iftex.sty
@@ -133,8 +132,8 @@ LaTeX Font Info:    Trying to load font information for T1+lmr on input line 11
 File: t1lmr.fd 2009/10/30 v1.6 Font defs for Latin Modern
 )) (/data/hu_fbeyer/.TinyTeX/texmf-dist/tex/latex/base/inputenc.sty
 Package: inputenc 2020/08/01 v1.3d Input encoding file
-\inpenc@prehook=\toks21
-\inpenc@posthook=\toks22
+\inpenc@prehook=\toks20
+\inpenc@posthook=\toks21
 ) (/data/hu_fbeyer/.TinyTeX/texmf-dist/tex/latex/base/textcomp.sty
 Package: textcomp 2020/02/02 v2.0n Standard LaTeX package
 ) (/data/hu_fbeyer/.TinyTeX/texmf-dist/tex/latex/upquote/upquote.sty
@@ -144,9 +143,9 @@ tim
 Package: microtype 2020/12/07 v2.8 Micro-typographical refinements (RS)
 (/data/hu_fbeyer/.TinyTeX/texmf-dist/tex/latex/graphics/keyval.sty
 Package: keyval 2014/10/28 v1.15 key=value parser (DPC)
-\KV@toks@=\toks23
+\KV@toks@=\toks22
 )
-\MT@toks=\toks24
+\MT@toks=\toks23
 \MT@count=\count197
 LaTeX Info: Redefining \textls on input line 788.
 \MT@outer@kern=\dimen148
@@ -312,7 +311,7 @@ Package: ifvtex 2019/10/25 v1.7 ifvtex legacy package. Use iftex instead.
 \Gm@layoutheight=\dimen158
 \Gm@layouthoffset=\dimen159
 \Gm@layoutvoffset=\dimen160
-\Gm@dimlist=\toks25
+\Gm@dimlist=\toks24
 ) (/data/hu_fbeyer/.TinyTeX/texmf-dist/tex/latex/tools/longtable.sty
 Package: longtable 2020/01/07 v4.13 Multi-page Table package (DPC)
 \LTleft=\skip54
@@ -329,7 +328,7 @@ Package: longtable 2020/01/07 v4.13 Multi-page Table package (DPC)
 \LT@rows=\count281
 \c@LT@tables=\count282
 \c@LT@chunks=\count283
-\LT@p@ftn=\toks26
+\LT@p@ftn=\toks25
 ) (/data/hu_fbeyer/.TinyTeX/texmf-dist/tex/latex/booktabs/booktabs.sty
 Package: booktabs 2020/01/12 v1.61803398 Publication quality tables
 \heavyrulewidth=\dimen162
@@ -349,10 +348,31 @@ Package: booktabs 2020/01/12 v1.61803398 Publication quality tables
 \@thisruleclass=\count286
 \@lastruleclass=\count287
 \@thisrulewidth=\dimen174
+) (/data/hu_fbeyer/.TinyTeX/texmf-dist/tex/latex/tools/array.sty
+Package: array 2020/10/01 v2.5c Tabular extension package (FMi)
+\col@sep=\dimen175
+\ar@mcellbox=\box53
+\extrarowheight=\dimen176
+\NC@list=\toks26
+\extratabsurround=\skip58
+\backup@length=\skip59
+\ar@cellbox=\box54
+) (/data/hu_fbeyer/.TinyTeX/texmf-dist/tex/latex/tools/calc.sty
+Package: calc 2017/05/25 v4.3 Infix arithmetic (KKT,FJ)
+\calc@Acount=\count288
+\calc@Bcount=\count289
+\calc@Adimen=\dimen177
+\calc@Bdimen=\dimen178
+\calc@Askip=\skip60
+\calc@Bskip=\skip61
+LaTeX Info: Redefining \setlength on input line 80.
+LaTeX Info: Redefining \addtolength on input line 81.
+\calc@Ccount=\count290
+\calc@Cskip=\skip62
 ) (/data/hu_fbeyer/.TinyTeX/texmf-dist/tex/latex/mdwtools/footnote.sty
 Package: footnote 1997/01/28 1.13 Save footnotes around boxes
-\fn@notes=\box53
-\fn@width=\dimen175
+\fn@notes=\box55
+\fn@width=\dimen179
 ) (/data/hu_fbeyer/.TinyTeX/texmf-dist/tex/latex/graphics/graphicx.sty
 Package: graphicx 2020/09/09 v1.2b Enhanced LaTeX Graphics (DPC,SPQR)
 (/data/hu_fbeyer/.TinyTeX/texmf-dist/tex/latex/graphics/graphics.sty
@@ -364,46 +384,32 @@ File: graphics.cfg 2016/06/04 v1.11 sample graphics configuration
 )
 Package graphics Info: Driver file: pdftex.def on input line 105.
 )
-\Gin@req@height=\dimen176
-\Gin@req@width=\dimen177
-) (/data/hu_fbeyer/.TinyTeX/texmf-dist/tex/latex/grffile/grffile.sty
-Package: grffile 2019/11/11 v2.1 Extended file name support for graphics (legac
-y)
-Package grffile Info: This package is an empty stub for compatibility on input 
-line 40.
+\Gin@req@height=\dimen180
+\Gin@req@width=\dimen181
 ) (/data/hu_fbeyer/.TinyTeX/texmf-dist/tex/latex/float/float.sty
 Package: float 2001/11/08 v1.3d Float enhancements (AL)
-\c@float@type=\count288
+\c@float@type=\count291
 \float@exts=\toks27
-\float@box=\box54
+\float@box=\box56
 \@float@everytoks=\toks28
-\@floatcapt=\box55
-) (/data/hu_fbeyer/.TinyTeX/texmf-dist/tex/latex/tools/array.sty
-Package: array 2020/10/01 v2.5c Tabular extension package (FMi)
-\col@sep=\dimen178
-\ar@mcellbox=\box56
-\extrarowheight=\dimen179
-\NC@list=\toks29
-\extratabsurround=\skip58
-\backup@length=\skip59
-\ar@cellbox=\box57
+\@floatcapt=\box57
 ) (/data/hu_fbeyer/.TinyTeX/texmf-dist/tex/latex/multirow/multirow.sty
 Package: multirow 2021/01/29 v2.7 Span multiple rows of a table
-\multirow@colwidth=\skip60
-\multirow@cntb=\count289
-\multirow@dima=\skip61
-\bigstrutjot=\dimen180
+\multirow@colwidth=\skip63
+\multirow@cntb=\count292
+\multirow@dima=\skip64
+\bigstrutjot=\dimen182
 ) (/data/hu_fbeyer/.TinyTeX/texmf-dist/tex/latex/wrapfig/wrapfig.sty
-\wrapoverhang=\dimen181
-\WF@size=\dimen182
-\c@WF@wrappedlines=\count290
+\wrapoverhang=\dimen183
+\WF@size=\dimen184
+\c@WF@wrappedlines=\count293
 \WF@box=\box58
-\WF@everypar=\toks30
+\WF@everypar=\toks29
 Package: wrapfig 2003/01/31  v 3.6
 ) (/data/hu_fbeyer/.TinyTeX/texmf-dist/tex/latex/colortbl/colortbl.sty
 Package: colortbl 2020/01/04 v1.0e Color table columns (DPC)
-\everycr=\toks31
-\minrowclearance=\skip62
+\everycr=\toks30
+\minrowclearance=\skip65
 ) (/data/hu_fbeyer/.TinyTeX/texmf-dist/tex/latex/pdflscape/pdflscape.sty
 Package: pdflscape 2019/12/05 v0.12 Display of landscape pages in PDF (HO)
 (/data/hu_fbeyer/.TinyTeX/texmf-dist/tex/latex/graphics/lscape.sty
@@ -415,32 +421,32 @@ Package: tabu 2019/01/11 v2.9 - flexible LaTeX tabulars (FC+tabu-fixed)
 (/data/hu_fbeyer/.TinyTeX/texmf-dist/tex/latex/varwidth/varwidth.sty
 Package: varwidth 2009/03/30 ver 0.92;  Variable-width minipages
 \@vwid@box=\box59
-\sift@deathcycles=\count291
-\@vwid@loff=\dimen183
-\@vwid@roff=\dimen184
+\sift@deathcycles=\count294
+\@vwid@loff=\dimen185
+\@vwid@roff=\dimen186
 )
-\c@taburow=\count292
-\tabu@nbcols=\count293
-\tabu@cnt=\count294
-\tabu@Xcol=\count295
-\tabu@alloc=\count296
-\tabu@nested=\count297
-\tabu@target=\dimen185
-\tabu@spreadtarget=\dimen186
-\tabu@naturalX=\dimen187
-\tabucolX=\dimen188
-\tabu@Xsum=\dimen189
-\extrarowdepth=\dimen190
-\abovetabulinesep=\dimen191
-\belowtabulinesep=\dimen192
-\tabustrutrule=\dimen193
-\tabu@thebody=\toks32
-\tabu@footnotes=\toks33
+\c@taburow=\count295
+\tabu@nbcols=\count296
+\tabu@cnt=\count297
+\tabu@Xcol=\count298
+\tabu@alloc=\count299
+\tabu@nested=\count300
+\tabu@target=\dimen187
+\tabu@spreadtarget=\dimen188
+\tabu@naturalX=\dimen189
+\tabucolX=\dimen190
+\tabu@Xsum=\dimen191
+\extrarowdepth=\dimen192
+\abovetabulinesep=\dimen193
+\belowtabulinesep=\dimen194
+\tabustrutrule=\dimen195
+\tabu@thebody=\toks31
+\tabu@footnotes=\toks32
 \tabu@box=\box60
 \tabu@arstrutbox=\box61
 \tabu@hleads=\box62
 \tabu@vleads=\box63
-\tabu@cellskip=\skip63
+\tabu@cellskip=\skip66
 )
 (/data/hu_fbeyer/.TinyTeX/texmf-dist/tex/latex/threeparttable/threeparttable.st
 y
@@ -455,56 +461,56 @@ Package: environ 2014/05/04 v0.3 A new way to define environments
 (/data/hu_fbeyer/.TinyTeX/texmf-dist/tex/latex/trimspaces/trimspaces.sty
 Package: trimspaces 2009/09/17 v1.1 Trim spaces around a token list
 ))
-\TPTL@width=\skip64
+\TPTL@width=\skip67
 ) (/data/hu_fbeyer/.TinyTeX/texmf-dist/tex/generic/ulem/ulem.sty
 \UL@box=\box65
 \UL@hyphenbox=\box66
-\UL@skip=\skip65
-\UL@hook=\toks34
-\UL@height=\dimen194
-\UL@pe=\count298
-\UL@pixel=\dimen195
+\UL@skip=\skip68
+\UL@hook=\toks33
+\UL@height=\dimen196
+\UL@pe=\count301
+\UL@pixel=\dimen197
 \ULC@box=\box67
 Package: ulem 2019/11/18
-\ULdepth=\dimen196
+\ULdepth=\dimen198
 ) (/data/hu_fbeyer/.TinyTeX/texmf-dist/tex/latex/makecell/makecell.sty
 Package: makecell 2009/08/03 V0.1e Managing of Tab Column Heads and Cells
-\rotheadsize=\dimen197
-\c@nlinenum=\count299
-\TeXr@lab=\toks35
+\rotheadsize=\dimen199
+\c@nlinenum=\count302
+\TeXr@lab=\toks34
 ) (/data/hu_fbeyer/.TinyTeX/texmf-dist/tex/latex/l3backend/l3backend-pdftex.def
 File: l3backend-pdftex.def 2020-01-29 L3 backend support: PDF output (pdfTeX)
-\l__color_backend_stack_int=\count300
+\l__color_backend_stack_int=\count303
 \l__pdf_internal_box=\box68
 ) (./SuppMat_PLOS.aux)
 \openout1 = `SuppMat_PLOS.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 90.
-LaTeX Font Info:    ... okay on input line 90.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 90.
-LaTeX Font Info:    ... okay on input line 90.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 90.
-LaTeX Font Info:    ... okay on input line 90.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 90.
-LaTeX Font Info:    ... okay on input line 90.
-LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 90.
-LaTeX Font Info:    ... okay on input line 90.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 90.
-LaTeX Font Info:    ... okay on input line 90.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 90.
-LaTeX Font Info:    ... okay on input line 90.
-LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 90.
-LaTeX Font Info:    ... okay on input line 90.
-LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 90.
-LaTeX Font Info:    ... okay on input line 90.
-LaTeX Info: Redefining \microtypecontext on input line 90.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 94.
+LaTeX Font Info:    ... okay on input line 94.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 94.
+LaTeX Font Info:    ... okay on input line 94.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 94.
+LaTeX Font Info:    ... okay on input line 94.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 94.
+LaTeX Font Info:    ... okay on input line 94.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 94.
+LaTeX Font Info:    ... okay on input line 94.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 94.
+LaTeX Font Info:    ... okay on input line 94.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 94.
+LaTeX Font Info:    ... okay on input line 94.
+LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 94.
+LaTeX Font Info:    ... okay on input line 94.
+LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 94.
+LaTeX Font Info:    ... okay on input line 94.
+LaTeX Info: Redefining \microtypecontext on input line 94.
 Package microtype Info: Generating PDF output.
 Package microtype Info: Character protrusion enabled (level 2).
 Package microtype Info: Using protrusion set `basicmath'.
 Package microtype Info: Automatic font expansion enabled (level 2),
 (microtype)             stretch: 20, shrink: 20, step: 1, non-selected.
 Package microtype Info: Using default expansion set `alltext-nott'.
-LaTeX Info: Redefining \showhyphens on input line 90.
+LaTeX Info: Redefining \showhyphens on input line 94.
 Package microtype Info: No adjustment of tracking.
 Package microtype Info: No adjustment of interword spacing.
 Package microtype Info: No adjustment of character kerning.
@@ -519,7 +525,7 @@ Package epstopdf-base Info: Redefining graphics rule for `.eps' on input line 4
 File: epstopdf-sys.cfg 2010/07/13 v1.3 Configuration of (r)epstopdf for TeX Liv
 e
 ))
-Package hyperref Info: Link coloring OFF on input line 90.
+Package hyperref Info: Link coloring OFF on input line 94.
 (/data/hu_fbeyer/.TinyTeX/texmf-dist/tex/latex/hyperref/nameref.sty
 Package: nameref 2019/09/16 v2.46 Cross-referencing by name of section
 (/data/hu_fbeyer/.TinyTeX/texmf-dist/tex/latex/refcount/refcount.sty
@@ -529,11 +535,11 @@ Package: refcount 2019/12/15 v3.6 Data extraction from label references (HO)
 sty
 Package: gettitlestring 2019/12/15 v1.6 Cleanup title references (HO)
 )
-\c@section@level=\count301
+\c@section@level=\count304
 )
-LaTeX Info: Redefining \ref on input line 90.
-LaTeX Info: Redefining \pageref on input line 90.
-LaTeX Info: Redefining \nameref on input line 90.
+LaTeX Info: Redefining \ref on input line 94.
+LaTeX Info: Redefining \pageref on input line 94.
+LaTeX Info: Redefining \nameref on input line 94.
 (./SuppMat_PLOS.out) (./SuppMat_PLOS.out)
 \@outlinefile=\write3
 \openout3 = `SuppMat_PLOS.out'.
@@ -573,39 +579,39 @@ LaTeX Info: Redefining \nameref on input line 90.
 * (1in=72.27pt=25.4mm, 1cm=28.453pt)
 
 LaTeX Font Info:    Trying to load font information for OT1+lmr on input line 9
-2.
+6.
 (/data/hu_fbeyer/.TinyTeX/texmf-dist/tex/latex/lm/ot1lmr.fd
 File: ot1lmr.fd 2009/10/30 v1.6 Font defs for Latin Modern
 )
 LaTeX Font Info:    Trying to load font information for OML+lmm on input line 9
-2.
+6.
 (/data/hu_fbeyer/.TinyTeX/texmf-dist/tex/latex/lm/omllmm.fd
 File: omllmm.fd 2009/10/30 v1.6 Font defs for Latin Modern
 )
 LaTeX Font Info:    Trying to load font information for OMS+lmsy on input line 
-92.
+96.
 (/data/hu_fbeyer/.TinyTeX/texmf-dist/tex/latex/lm/omslmsy.fd
 File: omslmsy.fd 2009/10/30 v1.6 Font defs for Latin Modern
 )
 LaTeX Font Info:    Trying to load font information for OMX+lmex on input line 
-92.
+96.
 (/data/hu_fbeyer/.TinyTeX/texmf-dist/tex/latex/lm/omxlmex.fd
 File: omxlmex.fd 2009/10/30 v1.6 Font defs for Latin Modern
 )
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <12> on input line 92.
+(Font)              <12> on input line 96.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <8> on input line 92.
+(Font)              <8> on input line 96.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <6> on input line 92.
-LaTeX Font Info:    Trying to load font information for U+msa on input line 92.
+(Font)              <6> on input line 96.
+LaTeX Font Info:    Trying to load font information for U+msa on input line 96.
 
 (/data/hu_fbeyer/.TinyTeX/texmf-dist/tex/latex/amsfonts/umsa.fd
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 ) (/data/hu_fbeyer/.TinyTeX/texmf-dist/tex/latex/microtype/mt-msa.cfg
 File: mt-msa.cfg 2006/02/04 v1.1 microtype config. file: AMS symbols (a) (RS)
 )
-LaTeX Font Info:    Trying to load font information for U+msb on input line 92.
+LaTeX Font Info:    Trying to load font information for U+msb on input line 96.
 
 (/data/hu_fbeyer/.TinyTeX/texmf-dist/tex/latex/amsfonts/umsb.fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
@@ -630,187 +636,187 @@ pt>
 File: figures/Bland_Altmann_plot_subcort_allinone.png Graphic file (type png)
 <use figures/Bland_Altmann_plot_subcort_allinone.png>
 Package pdftex.def Info: figures/Bland_Altmann_plot_subcort_allinone.png  used 
-on input line 104.
+on input line 108.
 (pdftex.def)             Requested size: 469.75449pt x 295.55846pt.
 [2pdfTeX warning (ext4): destination with the same identifier (name{figure.1}) 
 has been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   
-l.110 \newpage
+l.114 \newpage
                <./figures/Bland_Altmann_plot_subcort_allinone.png (PNG copy)>]
 <figures/pial/thickness_sm10_ICC.png, id=117, 1487.5575pt x 1343.0175pt>
 File: figures/pial/thickness_sm10_ICC.png Graphic file (type png)
 <use figures/pial/thickness_sm10_ICC.png>
 Package pdftex.def Info: figures/pial/thickness_sm10_ICC.png  used on input lin
-e 120.
+e 124.
 (pdftex.def)             Requested size: 216.13293pt x 195.13216pt.
 <figures/thickness_sm10_ICC.png, id=118, 1525.7pt x 1294.8375pt>
 File: figures/thickness_sm10_ICC.png Graphic file (type png)
 <use figures/thickness_sm10_ICC.png>
-Package pdftex.def Info: figures/thickness_sm10_ICC.png  used on input line 120
+Package pdftex.def Info: figures/thickness_sm10_ICC.png  used on input line 124
 .
 (pdftex.def)             Requested size: 229.91602pt x 195.12608pt.
 <figures/pial/thickness_sm10_pd.png, id=119, 1487.5575pt x 1343.0175pt>
 File: figures/pial/thickness_sm10_pd.png Graphic file (type png)
 <use figures/pial/thickness_sm10_pd.png>
 Package pdftex.def Info: figures/pial/thickness_sm10_pd.png  used on input line
- 132.
+ 136.
 (pdftex.def)             Requested size: 216.13293pt x 195.13216pt.
 <figures/thickness_sm10_pd.png, id=120, 1525.7pt x 1294.8375pt>
 File: figures/thickness_sm10_pd.png Graphic file (type png)
 <use figures/thickness_sm10_pd.png>
-Package pdftex.def Info: figures/thickness_sm10_pd.png  used on input line 132.
+Package pdftex.def Info: figures/thickness_sm10_pd.png  used on input line 136.
 
 (pdftex.def)             Requested size: 229.91602pt x 195.12608pt.
 
-LaTeX Warning: Float too large for page by 234.05832pt on input line 287.
+LaTeX Warning: Float too large for page by 234.05832pt on input line 291.
 
 [3pdfTeX warning (ext4): destination with the same identifier (name{figure.2}) 
 has been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   
-l.288 \newpage
+l.292 \newpage
               pdfTeX warning (ext4): destination with the same identifier (name
 {figure.3}) has been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   
-l.288 \newpage
+l.292 \newpage
                <./figures/pial/thickness_sm10_ICC.png> <./figures/thickness_sm1
 0_ICC.png> <./figures/pial/thickness_sm10_pd.png> <./figures/thickness_sm10_pd.
 png>] [4pdfTeX warning (ext4): destination with the same identifier (name{table
 .1}) has been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   
-l.288 \newpage
+l.292 \newpage
               ]
 <figures/pial/area_sm10_ICC.png, id=136, 1487.5575pt x 1343.0175pt>
 File: figures/pial/area_sm10_ICC.png Graphic file (type png)
 <use figures/pial/area_sm10_ICC.png>
-Package pdftex.def Info: figures/pial/area_sm10_ICC.png  used on input line 298
+Package pdftex.def Info: figures/pial/area_sm10_ICC.png  used on input line 302
 .
 (pdftex.def)             Requested size: 216.13293pt x 195.13216pt.
 <figures/area_sm10_ICC.png, id=137, 1525.7pt x 1294.8375pt>
 File: figures/area_sm10_ICC.png Graphic file (type png)
 <use figures/area_sm10_ICC.png>
-Package pdftex.def Info: figures/area_sm10_ICC.png  used on input line 298.
+Package pdftex.def Info: figures/area_sm10_ICC.png  used on input line 302.
 (pdftex.def)             Requested size: 229.91602pt x 195.12608pt.
 <figures/pial/area_sm10_pd.png, id=138, 1487.5575pt x 1343.0175pt>
 File: figures/pial/area_sm10_pd.png Graphic file (type png)
 <use figures/pial/area_sm10_pd.png>
-Package pdftex.def Info: figures/pial/area_sm10_pd.png  used on input line 310.
+Package pdftex.def Info: figures/pial/area_sm10_pd.png  used on input line 314.
 
 (pdftex.def)             Requested size: 216.13293pt x 195.13216pt.
 <figures/area_sm10_pd.png, id=139, 1525.7pt x 1294.8375pt>
 File: figures/area_sm10_pd.png Graphic file (type png)
 <use figures/area_sm10_pd.png>
-Package pdftex.def Info: figures/area_sm10_pd.png  used on input line 310.
+Package pdftex.def Info: figures/area_sm10_pd.png  used on input line 314.
 (pdftex.def)             Requested size: 229.91602pt x 195.12608pt.
 
-LaTeX Warning: Float too large for page by 234.05832pt on input line 465.
+LaTeX Warning: Float too large for page by 234.05832pt on input line 469.
 
 [5pdfTeX warning (ext4): destination with the same identifier (name{figure.4}) 
 has been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   
-l.466 \newpage
+l.470 \newpage
               pdfTeX warning (ext4): destination with the same identifier (name
 {figure.5}) has been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   
-l.466 \newpage
+l.470 \newpage
                <./figures/pial/area_sm10_ICC.png> <./figures/area_sm10_ICC.png>
  <./figures/pial/area_sm10_pd.png> <./figures/area_sm10_pd.png>] [6pdfTeX warni
 ng (ext4): destination with the same identifier (name{table.2}) has been alread
 y used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   
-l.466 \newpage
+l.470 \newpage
               ]
 <figures/pial/volume_sm10_ICC.png, id=156, 1487.5575pt x 1343.0175pt>
 File: figures/pial/volume_sm10_ICC.png Graphic file (type png)
 <use figures/pial/volume_sm10_ICC.png>
 Package pdftex.def Info: figures/pial/volume_sm10_ICC.png  used on input line 4
-76.
+80.
 (pdftex.def)             Requested size: 216.13293pt x 195.13216pt.
 <figures/volume_sm10_ICC.png, id=157, 1525.7pt x 1294.8375pt>
 File: figures/volume_sm10_ICC.png Graphic file (type png)
 <use figures/volume_sm10_ICC.png>
-Package pdftex.def Info: figures/volume_sm10_ICC.png  used on input line 476.
+Package pdftex.def Info: figures/volume_sm10_ICC.png  used on input line 480.
 (pdftex.def)             Requested size: 229.91602pt x 195.12608pt.
 <figures/pial/volume_sm10_pd.png, id=158, 1487.5575pt x 1343.0175pt>
 File: figures/pial/volume_sm10_pd.png Graphic file (type png)
 <use figures/pial/volume_sm10_pd.png>
-Package pdftex.def Info: figures/pial/volume_sm10_pd.png  used on input line 48
-8.
+Package pdftex.def Info: figures/pial/volume_sm10_pd.png  used on input line 49
+2.
 (pdftex.def)             Requested size: 216.13293pt x 195.13216pt.
 <figures/volume_sm10_pd.png, id=159, 1525.7pt x 1294.8375pt>
 File: figures/volume_sm10_pd.png Graphic file (type png)
 <use figures/volume_sm10_pd.png>
-Package pdftex.def Info: figures/volume_sm10_pd.png  used on input line 488.
+Package pdftex.def Info: figures/volume_sm10_pd.png  used on input line 492.
 (pdftex.def)             Requested size: 229.91602pt x 195.12608pt.
 
-LaTeX Warning: Float too large for page by 234.05832pt on input line 643.
+LaTeX Warning: Float too large for page by 234.05832pt on input line 647.
 
 [7pdfTeX warning (ext4): destination with the same identifier (name{figure.6}) 
 has been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   
-l.644 \newpage
+l.648 \newpage
               pdfTeX warning (ext4): destination with the same identifier (name
 {figure.7}) has been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   
-l.644 \newpage
+l.648 \newpage
                <./figures/pial/volume_sm10_ICC.png> <./figures/volume_sm10_ICC.
 png> <./figures/pial/volume_sm10_pd.png> <./figures/volume_sm10_pd.png>] [8pdfT
 eX warning (ext4): destination with the same identifier (name{table.3}) has bee
 n already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   
-l.644 \newpage
+l.648 \newpage
               ]
-Overfull \hbox (64.4324pt too wide) in paragraph at lines 653--794
+Overfull \hbox (64.4324pt too wide) in paragraph at lines 657--798
  [][] 
  []
 
 
-LaTeX Warning: Float too large for page by 234.05832pt on input line 794.
+LaTeX Warning: Float too large for page by 234.05832pt on input line 798.
 
 [9] [10pdfTeX warning (ext4): destination with the same identifier (name{table.
 4}) has been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   
-l.795 \newpage
+l.799 \newpage
               ]
 <figures/unwarped/thickness_sm10_ICC.png, id=186, 1487.5575pt x 1343.0175pt>
 File: figures/unwarped/thickness_sm10_ICC.png Graphic file (type png)
 <use figures/unwarped/thickness_sm10_ICC.png>
 Package pdftex.def Info: figures/unwarped/thickness_sm10_ICC.png  used on input
- line 805.
+ line 809.
 (pdftex.def)             Requested size: 216.13293pt x 195.13216pt.
 <figures/unwarped/thickness_sm10_ICC_inf.png, id=187, 1525.7pt x 1294.8375pt>
 File: figures/unwarped/thickness_sm10_ICC_inf.png Graphic file (type png)
 <use figures/unwarped/thickness_sm10_ICC_inf.png>
 Package pdftex.def Info: figures/unwarped/thickness_sm10_ICC_inf.png  used on i
-nput line 805.
+nput line 809.
 (pdftex.def)             Requested size: 229.91602pt x 195.12608pt.
 <figures/unwarped/thickness_sm10_pd.png, id=188, 1487.5575pt x 1343.0175pt>
 File: figures/unwarped/thickness_sm10_pd.png Graphic file (type png)
 <use figures/unwarped/thickness_sm10_pd.png>
 Package pdftex.def Info: figures/unwarped/thickness_sm10_pd.png  used on input 
-line 817.
+line 821.
 (pdftex.def)             Requested size: 216.13293pt x 195.13216pt.
 <figures/unwarped/thickness_sm10_pd_inf.png, id=189, 1525.7pt x 1294.8375pt>
 File: figures/unwarped/thickness_sm10_pd_inf.png Graphic file (type png)
 <use figures/unwarped/thickness_sm10_pd_inf.png>
 Package pdftex.def Info: figures/unwarped/thickness_sm10_pd_inf.png  used on in
-put line 817.
+put line 821.
 (pdftex.def)             Requested size: 229.91602pt x 195.12608pt.
 
-LaTeX Warning: Float too large for page by 246.66957pt on input line 969.
+LaTeX Warning: Float too large for page by 246.66957pt on input line 973.
 
 
-LaTeX Warning: Float too large for page by 246.66957pt on input line 1119.
+LaTeX Warning: Float too large for page by 246.66957pt on input line 1123.
 
 <SuppMat_PLOS_files/figure-latex/plotcnruncorrwskyra-1.pdf, id=190, 413.545pt x
  269.005pt>
@@ -818,19 +824,19 @@ File: SuppMat_PLOS_files/figure-latex/plotcnruncorrwskyra-1.pdf Graphic file (t
 ype pdf)
 <use SuppMat_PLOS_files/figure-latex/plotcnruncorrwskyra-1.pdf>
 Package pdftex.def Info: SuppMat_PLOS_files/figure-latex/plotcnruncorrwskyra-1.
-pdf  used on input line 1126.
+pdf  used on input line 1130.
 (pdftex.def)             Requested size: 413.55028pt x 269.00844pt.
 [11pdfTeX warning (ext4): destination with the same identifier (name{figure.8})
  has been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   
-l.1132 W
+l.1136 W
         hen comparing Verio ND and Skyra D, we also see higher CNR on the Ve...
 pdfTeX warning (ext4): destination with the same identifier (name{figure.9}) ha
 s been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   
-l.1132 W
+l.1136 W
         hen comparing Verio ND and Skyra D, we also see higher CNR on the Ve...
  <./figures/unwarped/thickness_sm10_ICC.png> <./figures/unwarped/thickness_sm10
 _ICC_inf.png> <./figures/unwarped/thickness_sm10_pd.png> <./figures/unwarped/th
@@ -838,29 +844,29 @@ ickness_sm10_pd_inf.png>] [12pdfTeX warning (ext4): destination with the same i
 dentifier (name{table.5}) has been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   
-l.1132 W
+l.1136 W
         hen comparing Verio ND and Skyra D, we also see higher CNR on the Ve...
 ] [13pdfTeX warning (ext4): destination with the same identifier (name{table.6}
 ) has been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   
-l.1132 W
+l.1136 W
         hen comparing Verio ND and Skyra D, we also see higher CNR on the Ve...
 ] [14pdfTeX warning (ext4): destination with the same identifier (name{figure.1
 0}) has been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   
-l.1134 \end{document}
+l.1138 \end{document}
                       <./SuppMat_PLOS_files/figure-latex/plotcnruncorrwskyra-1.
 pdf>] (./SuppMat_PLOS.aux)
 Package rerunfilecheck Info: File `SuppMat_PLOS.out' has not changed.
 (rerunfilecheck)             Checksum: 5CF49C8E89EE6794852AA93AC3CEFAA8;5005.
  ) 
 Here is how much of TeX's memory you used:
- 14224 strings out of 481226
- 212795 string characters out of 5914293
- 644235 words of memory out of 5000000
- 30754 multiletter control sequences out of 15000+600000
+ 14293 strings out of 481226
+ 213678 string characters out of 5914293
+ 645146 words of memory out of 5000000
+ 30824 multiletter control sequences out of 15000+600000
  451650 words of font info for 99 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
  71i,9n,74p,517b,343s stack positions out of 5000i,500n,10000p,200000b,80000s
@@ -872,7 +878,7 @@ onts/type1/public/lm/lmmi10.pfb></data/hu_fbeyer/.TinyTeX/texmf-dist/fonts/type
 1/public/lm/lmr10.pfb></data/hu_fbeyer/.TinyTeX/texmf-dist/fonts/type1/public/l
 m/lmr12.pfb></data/hu_fbeyer/.TinyTeX/texmf-dist/fonts/type1/public/lm/lmr17.pf
 b>
-Output written on SuppMat_PLOS.pdf (14 pages, 21843693 bytes).
+Output written on SuppMat_PLOS.pdf (14 pages, 21845018 bytes).
 PDF statistics:
  269 PDF objects out of 1000 (max. 8388607)
  224 compressed objects within 3 object streams

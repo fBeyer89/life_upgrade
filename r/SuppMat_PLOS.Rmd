@@ -1,14 +1,15 @@
 ---
 title: "Supplementary Material for 'Estimating the effect of a scanner upgrade on measures of grey matter structure for longitudinal designs'"
 author:
-  - Evelyn Medawar, MSc [1]
+  - Evelyn Medawar, MSc [1][2][3]
   - Ronja Thieleking, MSc [1]
   - Iryna Manuilova, BSc [1]
   - Maria Paerisch[1]
-  - Arno Villringer, Prof. [1][2][3]
-  - A. Veronica Witte, PhD [1][2]
-  - Frauke Beyer, PhD [1][2]
-date: 1 Max-Planck-Institute for Human Cognitive and Brain Sciences, Leipzig \newline 2 CRC 1052 "Obesity Mechanisms", Subproject A1, University of Leipzig \newline 3 Day Clinic for Cognitive Neurology, University Clinic Leipzig
+  - Arno Villringer, Prof. [1][2][3][4][5]
+  - A. Veronica Witte, PhD [1][4][5]
+  - Frauke Beyer, PhD [1][4]
+date: 1 Max-Planck-Institute for Human Cognitive and Brain Sciences, Leipzig \newline 2 Berlin School of Mind and Brain, Humboldt-Universität zu Berlin, Berlin, Germany \newline 3 Center for Stroke Research Berlin (CSB), Charité Universitätsmedizin, Berlin, Germany \newline 4 CRC 1052 “Obesity Mechanisms”, Subproject A1, Leizpig University, Leipzig, Germany \newline 5 Day Clinic for Cognitive Neurology, University of Leipzig Medical Center - Leipzig University, Leipzig, Germany
+
 output:
   bookdown::pdf_book: 
     fig_caption: yes
@@ -48,7 +49,7 @@ knitr::opts_chunk$set(echo=FALSE, message=FALSE, warning=FALSE, fig.height=2, fi
 library(fsbrain)
 atlas = 'aparc';
 template_subject = 'fsaverage';
-template_subjects_dir = "/data/pt_nro186_lifeupdate/Data/FREESURFER/FREESURFER_long/"; 
+template_subjects_dir = "/afs/cbs.mpg.de/software/freesurfer/6.0.0p1/ubuntu-bionic-amd64/subjects/"; #your FS directory 
 library('rgl');
 r3dDefaults$windowRect=c(50, 50, 500, 500);
 
