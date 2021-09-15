@@ -1,7 +1,7 @@
 # life_upgrade
 This repository contains data and code for the project "Estimating the effect of a scanner upgrade on measures of gray matter structure for longitudinal designs" by Medawar et al.
 After revisions of the paper, the Rmd files of the manuscript and supplementary were updated to reflect all changes.
-`[Last update: 2020-05-06]`
+`[Last update: 2021-09-15]`
 
 Please contact medawar@cbs.mpg.de or fbeyer@cbs.mpg.de, if you have questions!
 
